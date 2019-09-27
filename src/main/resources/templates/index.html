@@ -1,12 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<!--suppress HtmlUnknownTarget -->
+<html lang="EN" xmlns:th="http://www.springframework.org/schema/mvc">
+  <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <p> PIRATE GAME </p>
+    <title>ENTITIES!</title>
+    <link rel="stylesheet" href="../css/main.css">
+  </head>
+  <body>
 
-    <canvas> </canvas>
-</body>
+    <div class="container">
+      <canvas id="myCanvas" width="1280" height="720"
+              style="border: 1px solid black;">
+        Sorry, but your browser does not support the HTML5 canvas tag.
+      </canvas>
+
+      <script type="text/javascript" th:src="@{../js/globals.js}"></script>
+      <script type="text/javascript" th:src="@{../js/consts.js}"></script>
+      <script type="text/javascript" th:src="@{../js/util.js}"></script>
+      <script type="text/javascript" th:src="@{../js/keys.js}"></script>
+      <script type="text/javascript" th:src="@{../js/handleMouse.js}"></script>
+      <script type="text/javascript" th:src="@{../js/Sprite.js}"></script>
+      <script type="text/javascript" th:src="@{../js/entityManager.js}"></script>
+      <script type="text/javascript" th:src="@{../js/render.js}"></script>
+      <script type="text/javascript" th:src="@{../js/imagesPreload.js}"></script>
+      <script type="text/javascript" th:src="@{../js/main.js}"></script>
+      <script type="text/javascript" th:src="@{../js/PirateGame.js}"></script>
+    </div>
+
+    <div class="log">
+
+    </div>
+  </body>
 </html>
