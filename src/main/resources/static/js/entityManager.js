@@ -12,21 +12,48 @@ A module which handles arbitrary entity-management for "Asteroids"
 /*jslint nomen: true, white: true, plusplus: true*/
 
 
-var entityManager = {
+let entityManager = {
 
 // "PRIVATE" DATA
-
 _gameObjects   : [],
-// "PRIVATE" METHODS
+
+// "PUBLIC" METHODS
 
 deferredSetup : function () {
-    this._categories = [this._rocks, this._bullets, this._ships];
 },
 
 
 render: function(ctx) {
     //For each category render each object
-    this._categories.forEach(category => category.forEach(entity => entity.render(ctx)));
+    this._gameObjects.forEach(obj => {
+        obj.render(ctx);
+    })
+},
+
+updateGameState: function(response) {
+    let gameState = JSON.parse(response);
+
+    gameState.gameObjects.forEach(go => {
+        if(this._gameObjects.filter(e => e.id == go.id ).length > 0){
+            let foundIndex = this._gameObjects.findIndex(e => e.id === go.id);
+            this._gameObjects[foundIndex] = new GameObject({
+                id: go.id,
+                x: go.x,
+                y: go.y,
+                sprite: go.sprite
+            });
+        } else {
+            let obj = new GameObject({
+                id : go.id,
+                x : go.x,
+                y : go.y,
+                sprite : go.sprite
+            });
+            this._gameObjects.push(obj);
+        }
+    })
+
+
 }
 
 };

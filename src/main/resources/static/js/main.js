@@ -51,8 +51,25 @@ main._updateClocks = function (frameTime) {
 };
 
 main._iterCore = function () {
-
     render(g_ctx);
+
+    let request = function() {
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: "", // parameters
+            success:
+                function (response) {
+                    entityManager.updateGameState(response);
+                },
+            error:function () {
+                console.log("failed to send request");
+            }
+        });
+    };
+
+    request();
+
 };
 
 // Annoying shim for Firefox and Safari

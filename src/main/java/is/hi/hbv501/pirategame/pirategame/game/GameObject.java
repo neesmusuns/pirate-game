@@ -2,6 +2,8 @@ package is.hi.hbv501.pirategame.pirategame.game;
 
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 
+import java.util.Random;
+
 public class GameObject {
     /**
      * The game object's position in 2D space.
@@ -17,6 +19,18 @@ public class GameObject {
      * The path to the game object's sprite
      */
     private String sprite;
+
+    /**
+     * The global ID used to refer to the game object
+     */
+    private int ID;
+
+    public GameObject(){
+        Random r = new Random();
+        position = new Vector2();
+        sprite = "";
+        ID = r.nextInt();
+    }
 
     /**
      * Update is called once every frame.
@@ -39,5 +53,9 @@ public class GameObject {
 
     public void setSprite(String sprite) {
         this.sprite = sprite;
+    }
+
+    public int getID() {
+        return ID;
     }
 }

@@ -1,6 +1,6 @@
 // GENERIC RENDERING
 
-var g_frameCounter = 1;
+let g_frameCounter = 1;
 
 
 function render(ctx) {
@@ -12,6 +12,7 @@ function render(ctx) {
     // The core rendering of the actual game / simulation
     //
     renderSimulation(ctx);
+
     
     ++g_frameCounter;
 }

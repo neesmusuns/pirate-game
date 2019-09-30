@@ -21,8 +21,6 @@ function handleMouse(evt) {
     
     // If no button is being pressed, then bail
     if (!evt.which) return;
-    
-    entityManager.yoinkNearestShip(g_mouseX, g_mouseY);
 }
 
 // Handle "down" and "move" events the same way.
