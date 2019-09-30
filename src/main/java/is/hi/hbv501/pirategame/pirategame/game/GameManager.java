@@ -28,12 +28,22 @@ public class GameManager {
         gameState = new GameState(world, gameObjects);
     }
 
+    private float dirY = 2;
+    private float dirX = 2;
+
     public void Update(){
         //gameObjects.forEach(GameObject::Update);
 
         gameObjects.forEach(obj -> {
-            obj.setPosition(new Vector2(obj.getPosition().getX() + 1f,
-                                        obj.getPosition().getY() + 1f));
+
+            if(obj.getPosition().getX() > 1280 || obj.getPosition().getX() < 0)
+                dirX *= -1;
+
+            if(obj.getPosition().getY() > 720 || obj.getPosition().getY() < 0)
+                dirY *= -1;
+
+            obj.setPosition(new Vector2(obj.getPosition().getX() + dirX,
+                                        obj.getPosition().getY() + dirY));
         });
 
         try {
