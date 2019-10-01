@@ -56,7 +56,7 @@ let g_images = {};
 function requestPreloads() {
 
     const requiredImages = {
-        pirate: "http://pixelartmaker.com/art/dc2439ca358bbdc.png"
+        pirate: '../images/pirate0.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
