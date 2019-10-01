@@ -34,23 +34,25 @@ public class GameManager {
     public void Update(){
         //gameObjects.forEach(GameObject::Update);
 
-        gameObjects.forEach(obj -> {
+        while(true) {
 
-            if(obj.getPosition().getX() > 1280 || obj.getPosition().getX() < 0)
-                dirX *= -1;
+            gameObjects.forEach(obj -> {
 
-            if(obj.getPosition().getY() > 720 || obj.getPosition().getY() < 0)
-                dirY *= -1;
+                if (obj.getPosition().getX() > 1280 || obj.getPosition().getX() < 0)
+                    dirX *= -1;
 
-            obj.setPosition(new Vector2(obj.getPosition().getX() + dirX,
-                                        obj.getPosition().getY() + dirY));
-        });
+                if (obj.getPosition().getY() > 720 || obj.getPosition().getY() < 0)
+                    dirY *= -1;
 
-        try {
-            Thread.sleep(16);
-            Update();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                obj.setPosition(new Vector2(obj.getPosition().getX() + dirX,
+                        obj.getPosition().getY() + dirY));
+            });
+
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
