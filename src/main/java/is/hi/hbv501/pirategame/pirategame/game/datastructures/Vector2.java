@@ -64,6 +64,51 @@ public class Vector2 {
         this.y = y;
     }
 
+    /**
+     * Multiplies the current vector by factor a
+     * @param a factor
+     */
+    public void mult(double a){
+        this.x *= a;
+        this.y *= a;
+    }
+
+    /**
+     * Adds the current vector with the other vector
+     * @param other vector
+     */
+    public void add(Vector2 other){
+        this.x += other.x;
+        this.y += other.y;
+    }
+
+    /**
+     * Subtracts the current vector by the other vector
+     * @param other vector
+     */
+    public void sub(Vector2 other){
+        this.x -= other.x;
+        this.y -= other.y;
+    }
+
+    /**
+     * Adds together two vectors
+     * @param a vector
+     * @param b vector
+     */
+    public static Vector2 Add(Vector2 a, Vector2 b){
+        return new Vector2(a.x + b.x, a.y + b.y);
+    }
+
+    /**
+     * Subtracts vector b from a
+     * @param a vector
+     * @param b vector
+     */
+    public static Vector2 Sub(Vector2 a, Vector2 b){
+        return new Vector2(a.x - b.x, a.y - b.y);
+    }
+
     public double getX() {
         return x;
     }
@@ -78,5 +123,10 @@ public class Vector2 {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @Override
+    public String toString(){
+        return "(X: " + x + " Y: " + y + ")";
     }
 }

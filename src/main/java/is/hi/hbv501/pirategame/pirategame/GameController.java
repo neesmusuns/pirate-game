@@ -33,6 +33,8 @@ public class GameController {
                 gameObject.put("sprite", obj.getSprite());
                 gameObject.put("x", obj.getPosition().getX());
                 gameObject.put("y", obj.getPosition().getY());
+                gameObject.put("scaleX", obj.getScale().getX());
+                gameObject.put("scaleY", obj.getScale().getY());
 
                 gameObjectsArray.put(gameObject);
             } catch (JSONException e) {

@@ -4,6 +4,9 @@ import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 
 import java.util.List;
 
+/**
+ * A data structure to represent a state of the game
+ */
 public class GameState {
     private World world;
     private List<GameObject> gameObjects;

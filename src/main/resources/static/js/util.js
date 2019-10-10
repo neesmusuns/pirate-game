@@ -95,6 +95,16 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+// SPRITE FETCHING
+// ===============
+
+getSprite: function(name){
+
+    if(name == "pirate"){
+        return g_sprites.pirate;
+    }
 }
 
 };

@@ -5,6 +5,8 @@ let g_frameCounter = 1;
 
 function render(ctx) {
 
+    ctx.imageSmoothingEnabled = false;
+
     // Clear the canvas
     //
     util.clearCanvas(ctx);

@@ -2,7 +2,7 @@
 
 entityManager.js
 
-A module which handles arbitrary entity-management for "Asteroids"
+A module which handles rendering of entities
 
 */
 
@@ -40,14 +40,18 @@ updateGameState: function(response) {
                 id: go.id,
                 x: go.x,
                 y: go.y,
-                sprite: go.sprite
+                sprite: go.sprite,
+                scaleX: go.scaleX,
+                scaleY: go.scaleY
             });
         } else {
             let obj = new GameObject({
                 id : go.id,
                 x : go.x,
                 y : go.y,
-                sprite : go.sprite
+                sprite : go.sprite,
+                scaleX: go.scaleX,
+                scaleY: go.scaleY
             });
             this._gameObjects.push(obj);
         }

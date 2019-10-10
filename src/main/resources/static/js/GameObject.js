@@ -17,11 +17,24 @@ function GameObject(descr) {
     for (let property in descr) {
         this[property] = descr[property];
     }
+
+    this.sprite = util.getSprite(this.sprite) || g_sprites.pirate;
 }
 
 GameObject.prototype.render = function (ctx) {
 
-    g_sprites.pirate.drawCentredAt(
+    let origScaleX = this.sprite.scaleX;
+
+    this.sprite.scaleX = this.scaleX;
+
+    let origScaleY = this.sprite.scaleY;
+
+    this.sprite.scaleY = this.scaleY;
+
+    this.sprite.drawCentredAt(
 	    ctx, this.x, this.y
     );
+
+    this.sprite.scaleX = origScaleX;
+    this.sprite.scaleY = origScaleY;
 };

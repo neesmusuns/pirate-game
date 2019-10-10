@@ -1,4 +1,6 @@
 canvas {
+    image-rendering: pixelated;                 /* Awesome future-browsers       */
+
     padding: 0;
     margin: auto;
     display: block;

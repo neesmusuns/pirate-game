@@ -55,7 +55,7 @@ let g_images = {};
 
 function requestPreloads() {
 
-    const requiredImages = {
+    let requiredImages = {
         pirate: '../images/pirate0.png'
     };
 

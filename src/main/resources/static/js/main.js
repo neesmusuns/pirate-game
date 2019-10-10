@@ -56,6 +56,7 @@ main._iterCore = function () {
     let request = function() {
         $.ajax({
             type: "POST",
+            cache: false,
             url: "",
             data: "", // parameters
             success:

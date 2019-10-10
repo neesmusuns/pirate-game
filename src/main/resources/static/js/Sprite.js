@@ -19,7 +19,8 @@ function Sprite(image) {
 
     this.width = image.width;
     this.height = image.height;
-    this.scale = 1;
+    this.scaleX = 1;
+    this.scaleY = 1;
 }
 
 Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
@@ -31,7 +32,7 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(rotation);
-    ctx.scale(this.scale, this.scale);
+    ctx.scale(this.scaleX, this.scaleY);
     
     // drawImage expects "top-left" coords, so we offset our destination
     // coords accordingly, to draw our sprite centred at the origin

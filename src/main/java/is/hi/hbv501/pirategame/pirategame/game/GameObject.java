@@ -2,8 +2,6 @@ package is.hi.hbv501.pirategame.pirategame.game;
 
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 
-import java.util.Random;
-
 public class GameObject {
     /**
      * The game object's position in 2D space.
@@ -23,13 +21,12 @@ public class GameObject {
     /**
      * The global ID used to refer to the game object
      */
-    private int ID;
+
+    private long ID;
 
     public GameObject(){
-        Random r = new Random();
         position = new Vector2();
         sprite = "";
-        ID = r.nextInt();
     }
 
     /**
@@ -55,7 +52,22 @@ public class GameObject {
         this.sprite = sprite;
     }
 
-    public int getID() {
+    public long getID() {
         return ID;
+    }
+
+    public void setID(long ID) { this.ID = ID; }
+
+    public Vector2 getScale() {
+        return scale;
+    }
+
+    public void setScale(Vector2 scale) {
+        this.scale = scale;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("GameObject [id=%s, position=%s, scale=%s, sprite=%s]", ID, position, scale, sprite);
     }
 }

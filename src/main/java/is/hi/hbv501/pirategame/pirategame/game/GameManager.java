@@ -28,16 +28,17 @@ public class GameManager {
         gameState = new GameState(world, gameObjects);
     }
 
-    private float dirY = 2;
-    private float dirX = 2;
+    private double dirY = 2;
+    private double dirX = 2;
+    private double scaleF = 0;
 
     public void Update(){
-        //gameObjects.forEach(GameObject::Update);
-
         while(true) {
+            gameObjects.forEach(GameObject::Update);
 
             gameObjects.forEach(obj -> {
 
+                //Move all objects around the screen and hit the sides
                 if (obj.getPosition().getX() > 1280 || obj.getPosition().getX() < 0)
                     dirX *= -1;
 
@@ -46,6 +47,13 @@ public class GameManager {
 
                 obj.setPosition(new Vector2(obj.getPosition().getX() + dirX,
                         obj.getPosition().getY() + dirY));
+
+                //Scale object according to a sine function
+                scaleF += 0.01f;
+                Vector2 tempScale = new Vector2(1, 1);
+                tempScale.mult(10*Math.sin(Math.PI*scaleF));
+                obj.setScale(tempScale);
+
             });
 
             try {
