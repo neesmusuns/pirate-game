@@ -19,19 +19,18 @@ var g_ctx = g_canvas.getContext("2d");
 // UPDATE SIMULATION
 // =================
 
-// GAME-SPECIFIC DIAGNOSTICS
+// INPUT-HANDLING
+// Here we structure input as a string the following way:
+// "KEYCODE1_IsDown KEYCODE2_IsDown ... KEYCODEX_IsDown"
 
-var KEY_0 = keyCode('0');
+function collectInput(){
+    let keyPresses = "";
 
-var KEY_1 = keyCode('1');
+    keys.forEach(function (value, keyCode) {
+        keyPresses += (String(keyCode)) + " ";
+    });
 
-var KEY_K = keyCode('K');
-
-function processDiagnostics() {
-    if(eatKey(KEY_K)){
-
-    }
-
+    return keyPresses;
 }
 
 // =================

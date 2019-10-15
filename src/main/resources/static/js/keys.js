@@ -9,14 +9,9 @@ function handleKeydown(evt) {
 }
 
 function handleKeyup(evt) {
-    keys[evt.keyCode] = false;
+    keys.splice(evt.keyCode, 1);
 }
 
-// Inspects, and then clears, a key's state
-//
-// This allows a keypress to be "one-shot" e.g. for toggles
-// ..until the auto-repeat kicks in, that is.
-//
 function eatKey(keyCode) {
     var isDown = keys[keyCode];
     keys[keyCode] = false;

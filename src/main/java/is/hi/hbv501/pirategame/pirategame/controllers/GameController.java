@@ -2,6 +2,7 @@ package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameManager;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
+import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 
 @Controller
 public class GameController {
@@ -23,6 +25,13 @@ public class GameController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody
     String CheckAdapter(HttpServletRequest request, HttpSession session) throws JSONException {
+        String sessionID = session.getId();
+        if(!GameManager.gm.getUsers().containsKey(sessionID)){
+           GameManager.gm.addUser(sessionID, new User(sessionID));
+        }
+
+        GameManager.gm.addKeysToUser(request.getParameter("Keys"), sessionID);
+
         GameState currentState = GameManager.gm.getGameState();
         JSONObject gameState = new JSONObject();
         JSONArray gameObjectsArray = new JSONArray();

@@ -53,12 +53,14 @@ main._updateClocks = function (frameTime) {
 main._iterCore = function () {
     render(g_ctx);
 
+    let keyObject = {Keys : collectInput()};
+
     let request = function() {
         $.ajax({
             type: "POST",
             cache: false,
             url: "",
-            data: "", // parameters
+            data: keyObject, // parameters
             success:
                 function (response) {
                     entityManager.updateGameState(response);
