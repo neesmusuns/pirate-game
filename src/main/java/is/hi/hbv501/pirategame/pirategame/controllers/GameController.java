@@ -1,4 +1,4 @@
-package is.hi.hbv501.pirategame.pirategame;
+package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameManager;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
