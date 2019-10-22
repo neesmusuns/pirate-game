@@ -27,7 +27,8 @@ function collectInput(){
     let keyPresses = "";
 
     keys.forEach(function (value, keyCode) {
-        keyPresses += (String(keyCode)) + " ";
+        if(value)
+            keyPresses += (String(keyCode)) + " ";
     });
 
     return keyPresses;

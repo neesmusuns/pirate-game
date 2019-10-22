@@ -1,10 +1,4 @@
-DELETE FROM GAME_OBJECTS;
+DELETE FROM USERS;
 
-INSERT INTO GAME_OBJECTS(positionX, positionY, scaleX, scaleY, sprite)
-VALUES (0, 0, 1, 1, 'pirate');
-
-INSERT INTO GAME_OBJECTS(positionX, positionY, scaleX, scaleY, sprite)
-VALUES (0, 0, 1, 1, 'pirate');
-
-INSERT INTO GAME_OBJECTS(positionX, positionY, scaleX, scaleY, sprite)
-VALUES (0, 0, 1, 1, 'pirate');
+INSERT INTO USERS(username, password)
+VALUES ('chicken', 'password');

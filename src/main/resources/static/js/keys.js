@@ -9,7 +9,7 @@ function handleKeydown(evt) {
 }
 
 function handleKeyup(evt) {
-    keys.splice(evt.keyCode, 1);
+    keys[evt.keyCode] = false
 }
 
 function eatKey(keyCode) {

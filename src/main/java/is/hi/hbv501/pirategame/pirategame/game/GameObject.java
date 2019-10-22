@@ -21,7 +21,6 @@ public class GameObject {
     /**
      * The global ID used to refer to the game object
      */
-
     private long ID;
 
     public GameObject(){

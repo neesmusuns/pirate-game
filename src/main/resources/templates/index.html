@@ -29,10 +29,21 @@
       <script type="text/javascript" th:src="@{../js/imagesPreload.js}"></script>
       <script type="text/javascript" th:src="@{../js/main.js}"></script>
       <script type="text/javascript" th:src="@{../js/PirateGame.js}"></script>
+      <script type="text/javascript" th:src="@{../js/log-in.js}"></script>
     </div>
 
     <div class="log">
 
+    </div>
+
+    <div id="log-in-form">
+      <label><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" id="username" required>
+
+      <label><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" id="password" required>
+
+      <button type="submit" onclick="logIn()">Login</button>
     </div>
   </body>
 </html>

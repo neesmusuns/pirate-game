@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class Input {
     public static boolean GetKey(String key, String input){
+        if(input == null)
+            return false;
         if(input.equals(""))
             return false;
         

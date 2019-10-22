@@ -29,12 +29,13 @@ var main = {
 
 // Perform one iteration of the mainloop
 main.iter = function (frameTime) {
-    
+
     // Use the given frameTime to update all of our game-clocks
     this._updateClocks(frameTime);
-    
+
     // Perform the iteration core to do all the "real" work
-    this._iterCore(this._frameTimeDelta_ms);
+    if(isLoggedIn)
+        this._iterCore(this._frameTimeDelta_ms);
     
     // Request the next iteration if needed
     this._requestNextIteration();
@@ -53,7 +54,8 @@ main._updateClocks = function (frameTime) {
 main._iterCore = function () {
     render(g_ctx);
 
-    let keyObject = {Keys : collectInput()};
+    let keyObject = {IsLoggedIn : true,
+                     Keys : collectInput()};
 
     let request = function() {
         $.ajax({

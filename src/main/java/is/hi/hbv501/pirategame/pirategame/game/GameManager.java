@@ -30,6 +30,7 @@ public class GameManager {
         GameObject go = new GameObject();
         go.setSprite("pirate");
         gameObjects.add(go);
+        go.setScale(new Vector2(3, 3));
         go = new GameObject();
         gameObjects.add(go);
         go.setID(1);
