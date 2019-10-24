@@ -1,6 +1,6 @@
 package is.hi.hbv501.pirategame.pirategame.controllers;
 
-import is.hi.hbv501.pirategame.pirategame.game.GameManager;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import is.hi.hbv501.pirategame.pirategame.services.UserService;
@@ -38,21 +38,21 @@ public class GameController {
             String username = request.getParameter("Username");
             String password = request.getParameter("Password");
 
-            if (userService.findUserByCredentials(username, password) != null) {
-                User user = userService.findUserByCredentials(username, password);
+            if (userService.findUserByCredentials(username) != null) {
+                User user = userService.findUserByCredentials(username);
                 user.setSessionID(sessionID);
-                GameManager.gm.addUser(sessionID, new User(username, password));
+                GameService.gm.addUser(sessionID, new User(username, password));
             } else{
                 User user = new User(username, password);
                 user.setSessionID(sessionID);
-                GameManager.gm.addUser(sessionID, new User(username, password));
+                GameService.gm.addUser(sessionID, new User(username, password));
             }
 
             return "true";
         } else {
-            GameManager.gm.addKeysToUser(request.getParameter("Keys"), sessionID);
+            GameService.gm.addKeysToUser(request.getParameter("Keys"), sessionID);
 
-            GameState currentState = GameManager.gm.getGameState();
+            GameState currentState = GameService.gm.getGameState();
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
             currentState.getGameObjects().forEach(obj -> {

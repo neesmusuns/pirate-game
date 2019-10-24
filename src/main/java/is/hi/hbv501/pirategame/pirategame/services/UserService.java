@@ -11,7 +11,7 @@ public class UserService {
     private
     UserJdbcRepository repository;
 
-    public User findUserByCredentials(String username, String password){
-        return repository.findUserByCredentials(username, password);
+    public User findUserByCredentials(String username){
+        return repository.findUserByCredentials(username);
     }
 }

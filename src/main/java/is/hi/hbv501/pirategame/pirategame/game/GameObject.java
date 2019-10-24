@@ -31,7 +31,7 @@ public class GameObject {
     /**
      * Update is called once every frame.
      */
-    void Update(){
+    public void Update(){
 
     }
 

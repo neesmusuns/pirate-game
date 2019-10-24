@@ -13,10 +13,10 @@ public class UserJdbcRepository {
     private
     JdbcTemplate jdbcTemplate;
 
-    public User findUserByCredentials(String username, String password) {
+    public User findUserByCredentials(String username) {
         try {
-            User user = jdbcTemplate.queryForObject("select * from USERS where username=? AND password=?",
-                    new Object[]{username, password},
+            User user = jdbcTemplate.queryForObject("select * from USERS where username=?",
+                    new Object[]{username},
                     new BeanPropertyRowMapper<>(User.class));
 
             return user;

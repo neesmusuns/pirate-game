@@ -1,27 +1,30 @@
-package is.hi.hbv501.pirategame.pirategame.game;
+package is.hi.hbv501.pirategame.pirategame.services;
 
+import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameManager {
+@Service
+public class GameService {
     private List<GameObject> gameObjects = new ArrayList<>();
     private World world = new World();
     private Map<String, User> users = new HashMap<>();
 
     private GameState gameState;
 
-    public static GameManager gm;
+    public static GameService gm;
 
     public static void Initialize(){
-        gm = new GameManager();
+        gm = new GameService();
         gm.Start();
         gm.Update();
     }
