@@ -15,18 +15,28 @@ public class UserJdbcRepository {
 
     public User findUserByCredentials(String username) {
         try {
-            User user = jdbcTemplate.queryForObject("select * from USERS where username=?",
+            return jdbcTemplate.queryForObject("select * from USERS where username=?",
                     new Object[]{username},
                     new BeanPropertyRowMapper<>(User.class));
-
-            return user;
         }
         catch(EmptyResultDataAccessException e){
             return null;
         }
     }
 
-    public int insertUser(User user){
-      return 0;
+    public int insertUser(User user) {
+        return jdbcTemplate.update("insert into USERS (username, password, money," +
+                                                          " headwear, shirt, pants, boat," +
+                                                          " drinks, treasure) " + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)," +
+                user.getUsername(), user.getPassword(), user.getMoney(), user.getHeadwear(),
+                user.getShirt(), user.getPants(), user.getBoat(), user.getDrinks(), user.getTreasure());
+    }
+
+    public int updateUser(User user) {
+        return jdbcTemplate.update("update USERS set money = ?," +
+                                                        " headwear = ?, shirt = ?, pants = ?, boat = ?," +
+                                                        " drinks = ?, treasure = ?" + "where username = ?",
+                user.getMoney(), user.getHeadwear(), user.getShirt(), user.getPants(),
+                user.getBoat(), user.getDrinks(), user.getTreasure(), user.getUsername());
     }
 }

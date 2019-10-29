@@ -33,8 +33,13 @@ render: function(ctx) {
 updateGameState: function(response) {
     let gameState = JSON.parse(response);
 
+    gameState.removedGameObjectIDs.forEach(ID => {
+        let index = this._gameObjects.findIndex(e => e.id === ID);
+        this._gameObjects.splice(index, 1);
+    });
+
     gameState.gameObjects.forEach(go => {
-        if(this._gameObjects.filter(e => e.id == go.id ).length > 0){
+        if(this._gameObjects.filter(e => e.id === go.id ).length > 0){
             let foundIndex = this._gameObjects.findIndex(e => e.id === go.id);
             this._gameObjects[foundIndex] = new GameObject({
                 id: go.id,
