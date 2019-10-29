@@ -3,15 +3,16 @@ package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A data structure to represent a state of the game
  */
 public class GameState {
     private World world;
-    private List<GameObject> gameObjects;
+    private Map<Long, GameObject> gameObjects;
 
-    public GameState(World world, List<GameObject> gameObjects) {
+    public GameState(World world, Map<Long, GameObject> gameObjects) {
         this.world = world;
         this.gameObjects = gameObjects;
     }
@@ -24,11 +25,11 @@ public class GameState {
         this.world = world;
     }
 
-    public List<GameObject> getGameObjects() {
+    public Map<Long, GameObject> getGameObjects() {
         return gameObjects;
     }
 
-    public void setGameObjects(List<GameObject> gameObjects) {
+    public void setGameObjects(Map<Long, GameObject> gameObjects) {
         this.gameObjects = gameObjects;
     }
 }

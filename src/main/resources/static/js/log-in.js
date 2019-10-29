@@ -4,9 +4,6 @@ function logIn(){
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
 
-    console.log(username);
-    console.log(password);
-
     let request = function() {
         let requestData = {IsLoggedIn : false,
                            Username : username,

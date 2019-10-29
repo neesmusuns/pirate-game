@@ -70,4 +70,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public long getPlayerObjectID() {
+        return PlayerObjectID;
+    }
+
+    public void setPlayerObjectID(long playerObjectID) {
+        PlayerObjectID = playerObjectID;
+    }
 }

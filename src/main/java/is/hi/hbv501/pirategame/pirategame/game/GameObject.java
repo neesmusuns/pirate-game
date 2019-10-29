@@ -1,6 +1,7 @@
 package is.hi.hbv501.pirategame.pirategame.game;
 
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
 public class GameObject {
     /**
@@ -24,6 +25,7 @@ public class GameObject {
     private long ID;
 
     public GameObject(){
+        this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
         sprite = "";
     }

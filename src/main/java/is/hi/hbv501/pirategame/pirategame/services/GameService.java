@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 public class GameService {
-    private List<GameObject> gameObjects = new ArrayList<>();
+    private Map<Long, GameObject> gameObjects = new HashMap<>();
     private World world = new World();
     private Map<String, User> users = new HashMap<>();
 
@@ -30,13 +30,6 @@ public class GameService {
     }
 
     public void Start(){
-        GameObject go = new GameObject();
-        go.setSprite("pirate");
-        gameObjects.add(go);
-        go.setScale(new Vector2(3, 3));
-        go = new GameObject();
-        gameObjects.add(go);
-        go.setID(1);
         gameState = new GameState(world, gameObjects);
     }
 
@@ -46,43 +39,34 @@ public class GameService {
 
     public void Update(){
         while(true) {
-            gameObjects.forEach(GameObject::Update);
+            for (GameObject go : gameObjects.values()) {
+                go.Update();
+            }
 
-            gameObjects.forEach(obj -> users.forEach((id, u) -> {
-                if(obj.getID() == 0){
-                    int moveDirX = 0;
-                    int moveDirY = 0;
+            users.values().forEach(u -> {
+                GameObject obj = gameObjects.get(u.getPlayerObjectID());
+                int moveDirX = 0;
+                int moveDirY = 0;
 
-                    if(Input.GetKey("W", u.getKeyPresses())){
-                        moveDirY = 1;
-                    }
-
-                    if(Input.GetKey("A", u.getKeyPresses())){
-                        moveDirX = -1;
-                    }
-
-                    if(Input.GetKey("S", u.getKeyPresses())){
-                        moveDirY = -1;
-                    }
-
-                    if(Input.GetKey("D", u.getKeyPresses())){
-                        moveDirX = 1;
-                    }
-
-                    obj.setPosition(new Vector2(obj.getPosition().getX() + moveDirX,
-                            obj.getPosition().getY() - moveDirY));
+                if(Input.GetKey("W", u.getKeyPresses())){
+                    moveDirY = 1;
                 }
-                else{
-                    if (obj.getPosition().getX() > 1280 || obj.getPosition().getX() < 0)
-                        dirX *= -1;
 
-                    if (obj.getPosition().getY() > 720 || obj.getPosition().getY() < 0)
-                        dirY *= -1;
-
-                    obj.setPosition(new Vector2(obj.getPosition().getX() + dirX,
-                            obj.getPosition().getY() + dirY));
+                if(Input.GetKey("A", u.getKeyPresses())){
+                    moveDirX = -1;
                 }
-            }));
+
+                if(Input.GetKey("S", u.getKeyPresses())){
+                    moveDirY = -1;
+                }
+
+                if(Input.GetKey("D", u.getKeyPresses())){
+                    moveDirX = 1;
+                }
+
+                obj.setPosition(new Vector2(obj.getPosition().getX() + moveDirX,
+                        obj.getPosition().getY() - moveDirY));
+            });
 
             try {
                 Thread.sleep(16);
@@ -101,7 +85,16 @@ public class GameService {
     }
 
     public void addUser(String sessionID, User user) {
+        GameObject go = addGameObject();
+        user.setPlayerObjectID(go.getID());
         users.put(sessionID, user);
+    }
+
+    private GameObject addGameObject(){
+        GameObject go = new GameObject();
+        gameObjects.put(go.getID(), go);
+
+        return go;
     }
 
     public void addKeysToUser(String keys, String sessionID){

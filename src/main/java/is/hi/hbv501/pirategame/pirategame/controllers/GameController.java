@@ -40,8 +40,12 @@ public class GameController {
 
             if (userService.findUserByCredentials(username) != null) {
                 User user = userService.findUserByCredentials(username);
-                user.setSessionID(sessionID);
-                GameService.gm.addUser(sessionID, new User(username, password));
+                if(user.getPassword().equals(password)) {
+                    user.setSessionID(sessionID);
+                    GameService.gm.addUser(sessionID, user);
+                }
+                else
+                    return "false";
             } else{
                 User user = new User(username, password);
                 user.setSessionID(sessionID);
@@ -55,7 +59,7 @@ public class GameController {
             GameState currentState = GameService.gm.getGameState();
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
-            currentState.getGameObjects().forEach(obj -> {
+            currentState.getGameObjects().values().forEach(obj -> {
                 try {
                     JSONObject gameObject = new JSONObject();
                     gameObject.put("id", obj.getID());
