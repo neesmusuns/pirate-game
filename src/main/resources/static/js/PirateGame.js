@@ -71,5 +71,27 @@ function preloadDone() {
     main.init();
 }
 
+window.addEventListener('beforeunload', function(e) {
+    let request = function() {
+        let requestData = {IsQuitting : true, IsLoggedIn : isLoggedIn};
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "",
+            data: requestData, // parameters
+            success:
+                function (response) {
+
+                },
+            error:function () {
+                console.log("failed to send request");
+            }
+        });
+    };
+
+    request();
+});
+
 // Kick it off
 requestPreloads();

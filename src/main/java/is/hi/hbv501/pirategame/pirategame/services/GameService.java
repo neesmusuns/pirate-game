@@ -6,11 +6,10 @@ import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,23 +20,19 @@ public class GameService {
 
     private GameState gameState;
 
-    public static GameService gm;
+    @Autowired
+    private UserService userService;
 
-    public static void Initialize(){
-        gm = new GameService();
-        gm.Start();
-        gm.Update();
+    public void Initialize(){
+        Start();
+        Update();
     }
 
-    public void Start(){
+    private void Start(){
         gameState = new GameState(world, gameObjects);
     }
 
-    private double dirY = 2;
-    private double dirX = 2;
-    private double scaleF = 0;
-
-    public void Update(){
+    private void Update(){
         while(true) {
             for (GameObject go : gameObjects.values()) {
                 go.Update();
@@ -90,11 +85,21 @@ public class GameService {
         users.put(sessionID, user);
     }
 
+    public void removeUser(String sessionID){
+        User removedUser = users.remove(sessionID);
+        userService.insertUser(removedUser);
+        removeGameObject(removedUser.getPlayerObjectID());
+    }
+
     private GameObject addGameObject(){
         GameObject go = new GameObject();
         gameObjects.put(go.getID(), go);
-
         return go;
+    }
+
+    private void removeGameObject(long ID){
+        gameState.addRemovedGameObjectID(ID);
+        gameObjects.remove(ID);
     }
 
     public void addKeysToUser(String keys, String sessionID){

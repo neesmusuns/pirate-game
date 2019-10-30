@@ -24,6 +24,11 @@ public class GameObject {
      */
     private long ID;
 
+    /**
+     * Is set to true when game object is modified
+     */
+    private boolean isModified;
+
     public GameObject(){
         this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
@@ -34,6 +39,7 @@ public class GameObject {
      * Update is called once every frame.
      */
     public void Update(){
+        isModified = false;
 
     }
 
@@ -42,6 +48,7 @@ public class GameObject {
     }
 
     public void setPosition(Vector2 position) {
+        isModified = true;
         this.position = position;
     }
 
@@ -50,6 +57,7 @@ public class GameObject {
     }
 
     public void setSprite(String sprite) {
+        isModified = true;
         this.sprite = sprite;
     }
 
@@ -57,18 +65,30 @@ public class GameObject {
         return ID;
     }
 
-    public void setID(long ID) { this.ID = ID; }
+    public void setID(long ID) {
+        isModified = true;
+        this.ID = ID;
+    }
 
     public Vector2 getScale() {
         return scale;
     }
 
     public void setScale(Vector2 scale) {
+        isModified = true;
         this.scale = scale;
     }
 
     @Override
     public String toString() {
         return String.format("GameObject [id=%s, position=%s, scale=%s, sprite=%s]", ID, position, scale, sprite);
+    }
+
+    public boolean isModified() {
+        return isModified;
+    }
+
+    public void setModified(boolean modified) {
+        isModified = modified;
     }
 }

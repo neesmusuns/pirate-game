@@ -14,4 +14,12 @@ public class UserService {
     public User findUserByCredentials(String username){
         return repository.findUserByCredentials(username);
     }
+
+    public void insertUser(User user){
+        repository.insertUser(user);
+    }
+
+    public void printRandomWord(){
+        System.out.println("Fish");
+    }
 }

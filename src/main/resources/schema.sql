@@ -10,6 +10,5 @@ CREATE TABLE USERS(
   boat INT,
   drinks INT,
   treasure INT,
-  map VARCHAR(1),
-  PRIMARY KEY (username, password)
+  PRIMARY KEY (username)
 );
