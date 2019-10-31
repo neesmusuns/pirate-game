@@ -60,7 +60,9 @@ updateGameState: function(response) {
             });
             this._gameObjects.push(obj);
         }
-    })
+    });
+
+    g_ctx.translate(gameState.posShift.x,gameState.posShift.y);
 
 
 }

@@ -16,7 +16,10 @@ public class UserService {
     }
 
     public void insertUser(User user){
-        repository.insertUser(user);
+        if(findUserByCredentials(user.getUsername()) != null)
+            repository.updateUser(user);
+        else
+            repository.insertUser(user);
     }
 
     public void printRandomWord(){

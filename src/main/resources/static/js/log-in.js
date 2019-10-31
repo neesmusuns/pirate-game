@@ -24,10 +24,17 @@ function logIn(){
         });
     };
 
-    request();
+    if(!isLoggedIn)
+        request();
 }
 
 function parseLogInResponse(response){
-    isLoggedIn = response == 'true';
-    console.log(isLoggedIn);
+    let parsedResponse = JSON.parse(response);
+    isLoggedIn = parsedResponse.IsLoggedIn == 'true';
+    if(isLoggedIn){
+        let logInDiv = document.getElementById("log-in-form");
+        logInDiv.parentNode.removeChild(logInDiv);
+        entityManager.updateGameState(response);
+    }
+
 }

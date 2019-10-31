@@ -27,7 +27,7 @@ public class UserJdbcRepository {
     public int insertUser(User user) {
         return jdbcTemplate.update("insert into USERS (username, password, money," +
                                                           " headwear, shirt, pants, boat," +
-                                                          " drinks, treasure) " + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)," +
+                                                          " drinks, treasure) " + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 user.getUsername(), user.getPassword(), user.getMoney(), user.getHeadwear(),
                 user.getShirt(), user.getPants(), user.getBoat(), user.getDrinks(), user.getTreasure());
     }

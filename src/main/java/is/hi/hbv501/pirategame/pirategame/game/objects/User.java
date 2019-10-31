@@ -1,5 +1,7 @@
 package is.hi.hbv501.pirategame.pirategame.game.objects;
 
+import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
+
 public class User {
     /**
      * Username of user
@@ -34,6 +36,8 @@ public class User {
     private int drinks;
     private int treasure;
     private int worldIndex;
+
+    private Vector2 deltaMovement;
 
     public User(String username, String password){
         this.username = username;
@@ -150,5 +154,13 @@ public class User {
 
     public void setWorldIndex(int worldIndex) {
         this.worldIndex = worldIndex;
+    }
+
+    public Vector2 getDeltaMovement() {
+        return deltaMovement;
+    }
+
+    public void setDeltaMovement(Vector2 deltaMovement) {
+        this.deltaMovement = deltaMovement;
     }
 }
