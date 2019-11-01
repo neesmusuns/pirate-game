@@ -37,7 +37,7 @@ public class User {
     private int treasure;
     private int worldIndex;
 
-    private Vector2 deltaMovement;
+    private Vector2 deltaMovement = new Vector2();
 
     public User(String username, String password){
         this.username = username;

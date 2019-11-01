@@ -42,14 +42,24 @@ public class GameController {
 
         String sessionID = session.getId();
 
+        /*
+         * QUITTING
+         */
         if (isQuitting && isLoggedIn) {
             gameService.removeUser(sessionID);
+
+        /*
+         * LOGGING IN
+         */
         } else if (!isLoggedIn) {
             String username = request.getParameter("Username");
             String password = request.getParameter("Password");
 
+            //If user exists in database
             if (userService.findUserByCredentials(username) != null) {
                 User user = userService.findUserByCredentials(username);
+
+                //Check password consistency & fetch / deny user
                 if (user.getPassword().equals(password)) {
                     user.setSessionID(sessionID);
                     gameService.addUser(sessionID, user);
@@ -58,12 +68,15 @@ public class GameController {
                     response.put("IsLoggedIn", "false");
                     return response.toString();
                 }
-            } else {
+            }
+            //If user doesn't exist, create a new one
+            else {
                 User user = new User(username, password);
                 user.setSessionID(sessionID);
                 gameService.addUser(sessionID, user);
             }
 
+            //Package up the World and send to user
             JSONObject response = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
             World world = currentState.getWorld();
@@ -71,20 +84,7 @@ public class GameController {
             for(int i = 0; i < world.getWidth(); i++) {
                 for (int j = 0; j < world.getHeight(); j++) {
                     GameObject obj = tiles[i][j];
-                    try {
-                        JSONObject gameObject = new JSONObject();
-                        gameObject.put("id", obj.getID());
-                        gameObject.put("sprite", obj.getSprite());
-                        gameObject.put("x", obj.getPosition().getX());
-                        gameObject.put("y", obj.getPosition().getY());
-                        gameObject.put("scaleX", obj.getScale().getX());
-                        gameObject.put("scaleY", obj.getScale().getY());
-
-                        gameObjectsArray.put(gameObject);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                    putGameObject(gameObjectsArray, obj);
                 }
             }
 
@@ -97,25 +97,19 @@ public class GameController {
             response.put("removedGameObjectIDs", new JSONArray());
             response.put("posShift", posShift);
             return response.toString();
-        } else if(gameService.getUsers().containsKey(sessionID)){
+        }
+        /*
+         * PLAYING
+         */
+        else if(gameService.getUsers().containsKey(sessionID)){
+            //Collect user request's input and assign it to user object
             gameService.addKeysToUser(request.getParameter("Keys"), sessionID);
 
+            //Send current game state to user
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
             currentState.getGameObjects().values().forEach(obj -> {
-                try {
-                    JSONObject gameObject = new JSONObject();
-                    gameObject.put("id", obj.getID());
-                    gameObject.put("sprite", obj.getSprite());
-                    gameObject.put("x", obj.getPosition().getX());
-                    gameObject.put("y", obj.getPosition().getY());
-                    gameObject.put("scaleX", obj.getScale().getX());
-                    gameObject.put("scaleY", obj.getScale().getY());
-
-                    gameObjectsArray.put(gameObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                putGameObject(gameObjectsArray, obj);
             });
             JSONArray removedGameObjectIDs = new JSONArray();
 
@@ -133,6 +127,23 @@ public class GameController {
             return gameState.toString();
         }
 
+        //Returned when request is incorrectly formatted or contains invalid data
         return "Bad Request";
+    }
+
+    private void putGameObject(JSONArray gameObjectsArray, GameObject obj) {
+        try {
+            JSONObject gameObject = new JSONObject();
+            gameObject.put("id", obj.getID());
+            gameObject.put("sprite", obj.getSprite());
+            gameObject.put("x", obj.getPosition().getX());
+            gameObject.put("y", obj.getPosition().getY());
+            gameObject.put("scaleX", obj.getScale().getX());
+            gameObject.put("scaleY", obj.getScale().getY());
+
+            gameObjectsArray.put(gameObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

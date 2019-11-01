@@ -16,6 +16,7 @@ let entityManager = {
 
 // "PRIVATE" DATA
 _gameObjects   : [],
+posShift : {x : 0, y : 0},
 
 // "PUBLIC" METHODS
 
@@ -41,19 +42,15 @@ updateGameState: function(response) {
     gameState.gameObjects.forEach(go => {
         if(this._gameObjects.filter(e => e.id === go.id ).length > 0){
             let foundIndex = this._gameObjects.findIndex(e => e.id === go.id);
-            this._gameObjects[foundIndex] = new GameObject({
-                id: go.id,
-                x: go.x,
-                y: go.y,
-                sprite: go.sprite,
-                scaleX: go.scaleX,
-                scaleY: go.scaleY
-            });
+            this._gameObjects[foundIndex].targetX = go.x;
+            this._gameObjects[foundIndex].targetY = go.y;
+            this._gameObjects[foundIndex].scaleX = go.scaleX;
+            this._gameObjects[foundIndex].scaleY = go.scaleY;
         } else {
             let obj = new GameObject({
                 id : go.id,
-                x : go.x,
-                y : go.y,
+                targetX : go.x,
+                targetY : go.y,
                 sprite : go.sprite,
                 scaleX: go.scaleX,
                 scaleY: go.scaleY
@@ -62,8 +59,13 @@ updateGameState: function(response) {
         }
     });
 
-    g_ctx.translate(gameState.posShift.x,gameState.posShift.y);
+    let xLerp = util.lerp(0,gameState.posShift.x - this.posShift.x, 0.02);
+    let yLerp = util.lerp(0,gameState.posShift.y - this.posShift.y, 0.02);
+    g_ctx.translate(xLerp, yLerp);
 
+    this.posShift.x += xLerp;
+
+    this.posShift.y += yLerp;
 
 }
 

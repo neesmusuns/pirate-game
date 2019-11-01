@@ -64,7 +64,7 @@ public class GameService {
                 obj.setPosition(new Vector2(obj.getPosition().getX() + moveDirX,
                         obj.getPosition().getY() - moveDirY));
 
-                u.setDeltaMovement(new Vector2(-moveDirX, moveDirY));
+                u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), new Vector2(-moveDirX, moveDirY)));
             });
 
             try {
@@ -85,7 +85,7 @@ public class GameService {
 
     public void addUser(String sessionID, User user) {
         GameObject go = addGameObject();
-        go.setPosition(new Vector2(10,10));
+        go.setPosition(new Vector2(400,300));
         go.setScale(new Vector2(2,2));
         user.setPlayerObjectID(go.getID());
         users.put(sessionID, user);
