@@ -20,6 +20,8 @@ public class GameService {
 
     private GameState gameState;
 
+    private int worldSize = 100;
+
     @Autowired
     private UserService userService;
 
@@ -30,7 +32,7 @@ public class GameService {
 
     private void Start(){
         gameState = new GameState(world, gameObjects);
-        world.generateWorld(100, 100);
+        world.generateWorld(worldSize, worldSize);
         System.out.println("Finished generating world");
     }
 
@@ -111,4 +113,14 @@ public class GameService {
     public void addKeysToUser(String keys, String sessionID){
         users.get(sessionID).setKeyPresses(keys);
     }
+
+    public int getWorldSize() {
+        return worldSize;
+    }
+
+    public void setWorldSize(int worldSize) {
+        this.worldSize = worldSize;
+    }
+
+
 }

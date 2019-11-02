@@ -8,6 +8,7 @@ import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import is.hi.hbv501.pirategame.pirategame.services.UserService;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.hibernate.service.spi.InjectService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -140,6 +141,7 @@ public class GameController {
             gameObject.put("y", obj.getPosition().getY());
             gameObject.put("scaleX", obj.getScale().getX());
             gameObject.put("scaleY", obj.getScale().getY());
+
 
             gameObjectsArray.put(gameObject);
         } catch (JSONException e) {

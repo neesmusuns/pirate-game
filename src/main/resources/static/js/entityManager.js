@@ -25,7 +25,7 @@ deferredSetup : function () {
 
 
 render: function(ctx) {
-    //For each category render each object
+    //Render each game object
     this._gameObjects.forEach(obj => {
         obj.render(ctx);
     })
@@ -33,11 +33,6 @@ render: function(ctx) {
 
 updateGameState: function(response) {
     let gameState = JSON.parse(response);
-
-    gameState.removedGameObjectIDs.forEach(ID => {
-        let index = this._gameObjects.findIndex(e => e.id === ID);
-        this._gameObjects.splice(index, 1);
-    });
 
     gameState.gameObjects.forEach(go => {
         if(this._gameObjects.filter(e => e.id === go.id ).length > 0){
@@ -57,6 +52,11 @@ updateGameState: function(response) {
             });
             this._gameObjects.push(obj);
         }
+    });
+
+    gameState.removedGameObjectIDs.forEach(ID => {
+        let index = this._gameObjects.findIndex(e => e.id === ID);
+        this._gameObjects.splice(index, 1);
     });
 
     let xLerp = util.lerp(0,gameState.posShift.x - this.posShift.x, 0.02);
