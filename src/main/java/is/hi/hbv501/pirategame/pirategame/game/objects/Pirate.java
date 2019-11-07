@@ -27,6 +27,11 @@ public class Pirate extends GameObject {
 
     private int worldIndex; // the current world, main or different diving worlds
 
+    public void Start(){
+        super.Start();
+
+        setHasCollider(true);
+    }
 
     public void move(Vector2 dir) {
 

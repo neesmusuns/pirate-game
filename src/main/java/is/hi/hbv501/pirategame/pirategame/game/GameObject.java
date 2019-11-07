@@ -34,6 +34,9 @@ public class GameObject {
      */
     private boolean isModified;
 
+    /**
+     * Is set to true if a collider is to be simulated for the game object
+     */
     private boolean hasCollider;
 
     @Autowired
@@ -43,6 +46,14 @@ public class GameObject {
         this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
         sprite = "";
+        Start();
+    }
+
+    /**
+     * Start is called on object initialization
+     */
+    public void Start(){
+
     }
 
     /**
@@ -51,11 +62,13 @@ public class GameObject {
     public void Update(){
         isModified = false;
 
-        //for (GameObject go : GetTilesInRange(1)) {
-        //    if (CheckCollision(go)) {
-        //        OnCollision(go);
-        //    }
-        //}
+        if(hasCollider) {
+            for (GameObject go : GetTilesInRange(1)) {
+                if (CheckCollision(go)) {
+                    OnCollision(go);
+                }
+            }
+        }
     }
 
     public Vector2 getPosition() {
@@ -115,6 +128,8 @@ public class GameObject {
     }
 
     private boolean CheckCollision(GameObject other){
+        if(!hasCollider) return false;
+
 
         return false;
     }
@@ -130,5 +145,9 @@ public class GameObject {
 
     public void setModified(boolean modified) {
         isModified = modified;
+    }
+
+    public void setHasCollider(boolean hasCollider) {
+        this.hasCollider = hasCollider;
     }
 }
