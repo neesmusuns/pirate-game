@@ -14,6 +14,8 @@ public class Util {
        put(65, "A");
        put(83, "S");
        put(68, "D");
+       put(69, "E");
+       put(70, "F");
     }};
 
     public static int[] worldPosToWorldIndex(Vector2 worldPos){

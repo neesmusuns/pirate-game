@@ -63,6 +63,16 @@ public class GameService {
                     moveDirX = 1;
                 }
 
+                if(Input.GetKey("E", u.getKeyPresses())){
+                    // if next to a shop tile
+                    // enterShop()
+                }
+
+                if(Input.GetKey("F", u.getKeyPresses())){
+                    // if next to another player
+                    // attack()
+                }
+
                 obj.setPosition(new Vector2(obj.getPosition().getX() + moveDirX,
                         obj.getPosition().getY() - moveDirY));
 

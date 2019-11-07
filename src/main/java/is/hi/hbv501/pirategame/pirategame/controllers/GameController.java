@@ -1,6 +1,5 @@
 package is.hi.hbv501.pirategame.pirategame.controllers;
 
-import com.google.gson.JsonObject;
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
@@ -8,8 +7,6 @@ import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import is.hi.hbv501.pirategame.pirategame.services.UserService;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.hibernate.service.spi.InjectService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
