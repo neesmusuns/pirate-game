@@ -3,6 +3,7 @@ package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.game.util.OpenSimplexNoise;
 import is.hi.hbv501.pirategame.pirategame.game.util.SquareGradient;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
 public class World {
 
@@ -30,6 +31,12 @@ public class World {
 
     private int height;
 
+    private GameService gameService;
+
+    public World(GameService gameService){
+        this.gameService = gameService;
+    }
+
     /**
      * Generates a world
      * @param x amount of tiles in the x-dimension
@@ -45,7 +52,7 @@ public class World {
                 OpenSimplexNoise noise = new OpenSimplexNoise(seed);
                 double[][] squareGradient = SquareGradient.Generate(x, y);
                 double n = Math.abs(noise.eval(i, j)) + 0.6 - squareGradient[i][j];
-                Tile t = new Tile();
+                Tile t = new Tile(gameService);
                 t.setScale(new Vector2(tileScale, tileScale));
 
                 if(n > 0.7){

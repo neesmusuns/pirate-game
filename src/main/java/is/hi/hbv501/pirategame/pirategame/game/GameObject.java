@@ -6,6 +6,7 @@ import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class GameObject {
@@ -39,10 +40,10 @@ public class GameObject {
      */
     private boolean hasCollider;
 
-    @Autowired
     GameService gameService;
 
-    public GameObject(){
+    public GameObject(GameService gameService){
+        this.gameService = gameService;
         this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
         sprite = "";
@@ -61,18 +62,35 @@ public class GameObject {
      */
     public void Update(){
         isModified = false;
-
-        if(hasCollider) {
-            for (GameObject go : GetTilesInRange(1)) {
-                if (CheckCollision(go)) {
-                    OnCollision(go);
-                }
-            }
-        }
     }
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public void translate(int x, int y){
+        Vector2 translation = new Vector2(x, y);
+        if(hasCollider) {
+            for (GameObject go : GetTilesInRange(1)) {
+                if (CheckCollision(go, translation)) {
+                    OnCollision(go);
+                    System.out.println(ID + " is colliding with " + go.getID());
+                    return;
+                }
+            }
+            Collection<GameObject> gameObjects = gameService.getGameObjects().values();
+            gameObjects.remove(this);
+            for(GameObject go : gameObjects){
+                if(go.hasCollider){
+                    if(CheckCollision(go, translation)){
+                        OnCollision(go);
+                        return;
+                    }
+                }
+            }
+        }
+
+        this.position.add(translation);
     }
 
     public void setPosition(Vector2 position) {
@@ -107,6 +125,11 @@ public class GameObject {
         this.scale = scale;
     }
 
+    /**
+     * Gets all the tiles within a given range of the game object
+     * @param range in tiles
+     * @return a list of tiles in range of the game object
+     */
     private ArrayList<GameObject> GetTilesInRange(int range){
         int[] coords = Util.worldPosToWorldIndex(position);
         ArrayList<GameObject> gameObjects = new ArrayList<>();
@@ -119,19 +142,22 @@ public class GameObject {
         return gameObjects;
     }
 
-    public void GetCollider(){
-
+    /**
+     * Gets the collider of the current game object
+     * @return Vector2 representing half width and height of collider
+     */
+    public Vector2 GetCollider(){
+        return new Vector2(10, 10);
     }
 
     public void OnCollision(GameObject collision){
 
     }
 
-    private boolean CheckCollision(GameObject other){
-        if(!hasCollider) return false;
+    private boolean CheckCollision(GameObject other, Vector2 dir){
+        if(!other.hasCollider) return false;
 
-
-        return false;
+        return Vector2.Distance(Vector2.Add(this.position, dir), other.position) < 20;
     }
 
     @Override
@@ -149,5 +175,9 @@ public class GameObject {
 
     public void setHasCollider(boolean hasCollider) {
         this.hasCollider = hasCollider;
+    }
+
+    public void setService(GameService gameService) {
+        this.gameService = gameService;
     }
 }

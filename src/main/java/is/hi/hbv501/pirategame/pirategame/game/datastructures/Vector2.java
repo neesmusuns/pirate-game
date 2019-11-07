@@ -26,6 +26,11 @@ public class Vector2 {
         this.y = 0;
     }
 
+    public Vector2(Vector2 position) {
+        this.x = position.x;
+        this.y = position.y;
+    }
+
     /**
      * Calculate distance between this vector and another vector
      * @param other Other vector
