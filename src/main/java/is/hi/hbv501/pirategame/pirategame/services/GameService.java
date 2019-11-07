@@ -2,6 +2,7 @@ package is.hi.hbv501.pirategame.pirategame.services;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
+import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
 import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
@@ -9,13 +10,12 @@ import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GameService {
     private Map<Long, GameObject> gameObjects = new HashMap<>();
-    private World world = new World();
+    private World world = new World(this);
     private Map<String, User> users = new HashMap<>();
 
     private GameState gameState;
@@ -63,10 +63,13 @@ public class GameService {
                     moveDirX = 1;
                 }
 
-                obj.setPosition(new Vector2(obj.getPosition().getX() + moveDirX,
-                        obj.getPosition().getY() - moveDirY));
+                Vector2 prevPos = new Vector2(obj.getPosition());
 
-                u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), new Vector2(-moveDirX, moveDirY)));
+                //Perform movement
+                obj.translate(moveDirX, - moveDirY);
+
+                //Check delta position since last iteration
+                u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));
             });
 
             try {
@@ -86,7 +89,7 @@ public class GameService {
     }
 
     public void addUser(String sessionID, User user) {
-        GameObject go = addGameObject();
+        GameObject go = addGameObject(new Pirate(this));
         go.setPosition(new Vector2(400,300));
         go.setScale(new Vector2(2,2));
         user.setPlayerObjectID(go.getID());
@@ -99,8 +102,8 @@ public class GameService {
         removeGameObject(removedUser.getPlayerObjectID());
     }
 
-    private GameObject addGameObject(){
-        GameObject go = new GameObject();
+    private GameObject addGameObject(GameObject go){
+        go.setService(this);
         gameObjects.put(go.getID(), go);
         return go;
     }
@@ -108,6 +111,10 @@ public class GameService {
     private void removeGameObject(long ID){
         gameState.addRemovedGameObjectID(ID);
         gameObjects.remove(ID);
+    }
+
+    public HashMap<Long, GameObject> getGameObjects(){
+        return new HashMap<>(gameObjects);
     }
 
     public void addKeysToUser(String keys, String sessionID){

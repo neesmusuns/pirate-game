@@ -2,6 +2,7 @@ package is.hi.hbv501.pirategame.pirategame.game.objects;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
 public class Pirate extends GameObject {
 
@@ -26,6 +27,10 @@ public class Pirate extends GameObject {
     private int damage; // damage inflicted in fight
 
     private int worldIndex; // the current world, main or different diving worlds
+
+    public Pirate(GameService gameService) {
+        super(gameService);
+    }
 
     public void Start(){
         super.Start();

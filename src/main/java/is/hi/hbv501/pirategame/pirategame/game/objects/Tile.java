@@ -1,6 +1,7 @@
 package is.hi.hbv501.pirategame.pirategame.game.objects;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
 public class Tile extends GameObject {
     /**
@@ -15,6 +16,10 @@ public class Tile extends GameObject {
      * Land tiles cannot be traversed by boats.
      */
     private boolean isLand;
+
+    public Tile(GameService gameService) {
+        super(gameService);
+    }
 
 
     public boolean isPassable() {
