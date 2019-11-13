@@ -63,6 +63,16 @@ public class GameService {
                     moveDirX = 1;
                 }
 
+                if(Input.GetKey("E", u.getKeyPresses())){
+                    //if shop near
+                    //enter shop
+                }
+
+                if(Input.GetKey("F", u.getKeyPresses())){
+                    //if another player near
+                    //fight player
+                }
+
                 Vector2 prevPos = new Vector2(obj.getPosition());
 
                 //Perform movement

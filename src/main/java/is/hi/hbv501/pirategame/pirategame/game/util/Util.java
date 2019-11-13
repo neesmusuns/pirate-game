@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class Util {
     public static Map<Integer, String> Keys = new HashMap<Integer, String>(){{
-       put(87, "W");
-       put(65, "A");
-       put(83, "S");
-       put(68, "D");
-       put(69, "E");
-       put(70, "F");
+        put(87, "W");
+        put(65, "A");
+        put(83, "S");
+        put(68, "D");
+        put(69, "E");
+        put(70, "F");
     }};
 
     public static int[] worldPosToWorldIndex(Vector2 worldPos){
