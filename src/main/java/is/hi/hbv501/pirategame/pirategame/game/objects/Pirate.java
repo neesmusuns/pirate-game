@@ -66,6 +66,13 @@ public class Pirate extends GameObject {
 
     }
 
+    public Vector2[] getCollider(){
+        return new Vector2[]{
+                Vector2.Sub(getPosition(), new Vector2(15, 15)),
+                Vector2.Add(getPosition(), new Vector2(15, 15))
+        };
+    }
+
 
     public int getHealth() {
         return health;

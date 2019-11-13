@@ -28,6 +28,7 @@ public class Tile extends GameObject {
 
     public void setPassable(boolean passable) {
         isPassable = passable;
+        setHasCollider(!passable);
     }
 
     public boolean isLand() {

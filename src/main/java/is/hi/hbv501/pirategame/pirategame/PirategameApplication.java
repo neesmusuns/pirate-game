@@ -22,7 +22,8 @@ public class PirategameApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		gameService.Initialize();
+	public void run(String... args) {
+		Thread t = new Thread(() -> gameService.Initialize());
+		t.start();
 	}
 }

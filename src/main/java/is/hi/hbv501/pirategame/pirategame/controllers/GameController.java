@@ -24,15 +24,19 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class GameController {
+    public GameController(UserService userService, GameService gameService) {
+        this.userService = userService;
+        this.gameService = gameService;
+    }
+
     @RequestMapping("/")
     public String Game() {
         return "index";
     }
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired GameService gameService;
+    private final GameService gameService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody
@@ -47,7 +51,7 @@ public class GameController {
          * QUITTING
          */
         if (isQuitting && isLoggedIn) {
-            gameService.removeUser(sessionID);
+            gameService.requestRemoveUser(sessionID);
 
         /*
          * LOGGING IN
@@ -63,7 +67,7 @@ public class GameController {
                 //Check password consistency & fetch / deny user
                 if (user.getPassword().equals(password)) {
                     user.setSessionID(sessionID);
-                    gameService.addUser(sessionID, user);
+                    gameService.enqueueUser(sessionID, user);
                 } else {
                     JSONObject response = new JSONObject();
                     response.put("IsLoggedIn", "false");
@@ -74,7 +78,7 @@ public class GameController {
             else {
                 User user = new User(username, password);
                 user.setSessionID(sessionID);
-                gameService.addUser(sessionID, user);
+                gameService.enqueueUser(sessionID, user);
             }
 
             //Package up the World and send to user
@@ -109,9 +113,7 @@ public class GameController {
             //Send current game state to user
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
-            currentState.getGameObjects().values().forEach(obj -> {
-                putGameObject(gameObjectsArray, obj);
-            });
+            currentState.getGameObjects().values().forEach(obj -> putGameObject(gameObjectsArray, obj));
             JSONArray removedGameObjectIDs = new JSONArray();
 
             currentState.getRemovedGameObjectIDs().forEach(removedGameObjectIDs::put);

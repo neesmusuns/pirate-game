@@ -24,7 +24,7 @@ var main = {
     // "Frame Time" is a (potentially high-precision) frame-clock for animations
     _frameTime_ms : null,
     _frameTimeDelta_ms : null,
-
+    _hasRequestedNextFrame : false
 };
 
 // Perform one iteration of the mainloop
@@ -38,6 +38,7 @@ main.iter = function (frameTime) {
         this._iterCore(this._frameTimeDelta_ms);
     
     // Request the next iteration if needed
+    main._hasRequestedNextFrame = false;
     this._requestNextIteration();
 };
 
@@ -89,7 +90,12 @@ function mainIterFrame(frameTime) {
 }
 
 main._requestNextIteration = function () {
-    window.requestAnimationFrame(mainIterFrame);
+    if(!main._hasRequestedNextFrame) {
+        setTimeout(function () {
+            window.requestAnimationFrame(mainIterFrame);
+        }, 16);
+        main._hasRequestedNextFrame = true;
+    }
 };
 
 main.init = function () {

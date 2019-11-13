@@ -61,7 +61,7 @@ public class World {
                     t.setSprite("beach1");
                 }else{
                     t.setLand(false);
-                    t.setPassable(true);
+                    t.setPassable(false);
                     t.setSprite("sea1");
                 }
 
@@ -107,7 +107,7 @@ public class World {
 
                     if (!shouldStay) {
                         tiles[i][j].setLand(false);
-                        tiles[i][j].setPassable(true);
+                        tiles[i][j].setPassable(false);
                         tiles[i][j].setSprite("sea1");
                     }
                 }

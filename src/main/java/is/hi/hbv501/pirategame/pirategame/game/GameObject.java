@@ -3,11 +3,9 @@ package is.hi.hbv501.pirategame.pirategame.game;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.util.Util;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class GameObject {
     /**
@@ -40,7 +38,7 @@ public class GameObject {
      */
     private boolean hasCollider;
 
-    GameService gameService;
+    private GameService gameService;
 
     public GameObject(GameService gameService){
         this.gameService = gameService;
@@ -68,29 +66,46 @@ public class GameObject {
         return position;
     }
 
-    public void translate(int x, int y){
+    public boolean translate(int x, int y){
         Vector2 translation = new Vector2(x, y);
         if(hasCollider) {
+            /*
+             * TILE COLLISIONS
+             */
             for (GameObject go : GetTilesInRange(1)) {
+                if (CheckCollision(go, new Vector2())) {
+                    Unstick();
+                    OnCollision(go);
+                    return false;
+                }
                 if (CheckCollision(go, translation)) {
                     OnCollision(go);
-                    System.out.println(ID + " is colliding with " + go.getID());
-                    return;
+                    return false;
                 }
             }
+
+            /*
+             * OTHER COLLISIONS
+             */
             Collection<GameObject> gameObjects = gameService.getGameObjects().values();
             gameObjects.remove(this);
             for(GameObject go : gameObjects){
-                if(go.hasCollider){
+                if (CheckCollision(go, new Vector2())) {
+                    Unstick();
+                    OnCollision(go);
+                    return false;
+                }
+                if(go.getHasCollider()){
                     if(CheckCollision(go, translation)){
                         OnCollision(go);
-                        return;
+                        return false;
                     }
                 }
             }
         }
 
         this.position.add(translation);
+        return true;
     }
 
     public void setPosition(Vector2 position) {
@@ -134,8 +149,8 @@ public class GameObject {
         int[] coords = Util.worldPosToWorldIndex(position);
         ArrayList<GameObject> gameObjects = new ArrayList<>();
 
-        for(int i = Math.max(coords[0]-range, 0); i < Math.min(coords[0] + range, gameService.getWorldSize()); i++){
-            for(int j = Math.max(coords[1]-range, 0); j < Math.min(coords[1] + range, gameService.getWorldSize()); j++){
+        for(int i = Math.max(coords[0]-range, 0); i <= Math.min(coords[0] + range, gameService.getWorldSize()); i++){
+            for(int j = Math.max(coords[1]-range, 0); j <= Math.min(coords[1] + range, gameService.getWorldSize()); j++){
                 gameObjects.add(gameService.getGameState().getWorld().getTiles()[i][j]);
             }
         }
@@ -146,18 +161,81 @@ public class GameObject {
      * Gets the collider of the current game object
      * @return Vector2 representing half width and height of collider
      */
-    public Vector2 GetCollider(){
-        return new Vector2(10, 10);
+    public Vector2[] getCollider(){
+        return new Vector2[]{
+                Vector2.Sub(position, new Vector2(20, 20)),
+                Vector2.Add(position, new Vector2(20, 20))
+        };
     }
 
     public void OnCollision(GameObject collision){
 
     }
 
+    /**
+     * Checks collision with a game object
+     * @param other the potential collision
+     * @param dir the current movement direction of the game object
+     * @return true for a collision
+     */
     private boolean CheckCollision(GameObject other, Vector2 dir){
-        if(!other.hasCollider) return false;
+        if(!other.getHasCollider()) return false;
 
-        return Vector2.Distance(Vector2.Add(this.position, dir), other.position) < 20;
+        Vector2[] otherCollider = other.getCollider();
+        Vector2[] collider = getCollider();
+
+        return Util.isOverlapping(otherCollider[0], otherCollider[1],
+                                  Vector2.Add(collider[0], dir), Vector2.Add(collider[1],dir));
+    }
+
+    /**
+     * Unsticks the game object in the case that it gets stuck in a collision
+     */
+    private void Unstick() {
+        int limit = 1000;
+        boolean isUnstuck = false;
+
+        for(int iter = 1; iter < limit; iter++){
+            for (int i = -iter; i < iter; i++){
+                for(int j = -iter; j < iter; j++){
+                    isUnstuck = stuckTranslate(i, j);
+                }
+                if(isUnstuck) break;
+            }
+            if(isUnstuck) break;
+        }
+    }
+
+    public boolean stuckTranslate(int x, int y){
+        Vector2 translation = new Vector2(x, y);
+        if(hasCollider) {
+            /*
+             * TILE COLLISIONS
+             */
+            for (GameObject go : GetTilesInRange(1)) {
+                if (CheckCollision(go, translation)) {
+                    OnCollision(go);
+                    return false;
+                }
+            }
+
+            /*
+             * OTHER COLLISIONS
+             */
+            Collection<GameObject> gameObjects = gameService.getGameObjects().values();
+            gameObjects.remove(this);
+            for(GameObject go : gameObjects){
+                if(go.getHasCollider()){
+                    if(CheckCollision(go, translation)){
+                        OnCollision(go);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        this.position.add(translation);
+        return true;
     }
 
     @Override
@@ -175,6 +253,10 @@ public class GameObject {
 
     public void setHasCollider(boolean hasCollider) {
         this.hasCollider = hasCollider;
+    }
+
+    public boolean getHasCollider() {
+        return hasCollider;
     }
 
     public void setService(GameService gameService) {

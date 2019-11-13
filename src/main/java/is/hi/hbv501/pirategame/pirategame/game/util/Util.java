@@ -1,10 +1,6 @@
 package is.hi.hbv501.pirategame.pirategame.game.util;
 
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
-import is.hi.hbv501.pirategame.pirategame.services.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +13,22 @@ public class Util {
     }};
 
     public static int[] worldPosToWorldIndex(Vector2 worldPos){
-        return (new int[]{(int) (Math.round(worldPos.getX())/40), (int) (Math.round(worldPos.getY())/40)});
+        int[] coords = new int[]{((int)Math.round(worldPos.getX())/40), ((int)Math.round(worldPos.getY())/40)};
+        System.out.println(new Vector2(coords[0], coords[1]));
+        return (coords);
+    }
+
+    public static boolean isOverlapping(Vector2 l1, Vector2 r1, Vector2 l2, Vector2 r2) {
+        // If one rectangle is on left side of other
+        if (l1.getX() > r2.getX() || l2.getX() > r1.getX()) {
+            return false;
+        }
+
+        // If one rectangle is above other
+        if (l1.getY() > r2.getY() || l2.getY() > r1.getY()) {
+            return false;
+        }
+
+        return true;
     }
 }
