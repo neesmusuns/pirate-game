@@ -19,8 +19,8 @@ public class GameService {
     private Map<Long, GameObject> gameObjects = new HashMap<>();
     private World world = new World(this);
     private Map<String, User> users = new HashMap<>();
-    private sun.misc.Queue<Pair<String, User>> userQueue = new sun.misc.Queue<>();
-    private sun.misc.Queue<String> removedUserQueue = new sun.misc.Queue<>();
+    private Queue<Pair<String, User>> userQueue = new LinkedList<>();
+    private Queue<String> removedUserQueue = new LinkedList<>();
 
     private GameState gameState;
 
@@ -90,22 +90,15 @@ public class GameService {
 
             //Add connected users
             while(!userQueue.isEmpty()){
-                try {
-                    Pair<String, User> user = userQueue.dequeue();
-                    addUser(user.fst, user.snd);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Pair<String, User> user = userQueue.remove();
+                addUser(user.fst, user.snd);
             }
 
             //Remove disconnected users
             while(!removedUserQueue.isEmpty()){
-                try {
-                    String sessionID = removedUserQueue.dequeue();
-                    removeUser(sessionID);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                String sessionID = removedUserQueue.remove();
+                removeUser(sessionID);
+
             }
 
             //Iterate with a 16ms delay (60 FPS)
@@ -127,7 +120,7 @@ public class GameService {
     }
 
     public void enqueueUser(String sessionID, User user){
-        userQueue.enqueue(new Pair<>(sessionID, user));
+        userQueue.add(new Pair<>(sessionID, user));
     }
 
     private void addUser(String sessionID, User user) {
@@ -142,7 +135,7 @@ public class GameService {
     }
 
     public void requestRemoveUser(String sessionID){
-        removedUserQueue.enqueue(sessionID);
+        removedUserQueue.add(sessionID);
     }
 
     public void removeUser(String sessionID){
