@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    @Autowired
-    private
+    private final
     UserJdbcRepository repository;
+
+    public UserService(UserJdbcRepository repository) {
+        this.repository = repository;
+    }
 
     public User findUserByCredentials(String username){
         return repository.findUserByCredentials(username);
@@ -20,9 +23,5 @@ public class UserService {
             repository.updateUser(user);
         else
             repository.insertUser(user);
-    }
-
-    public void printRandomWord(){
-        System.out.println("Fish");
     }
 }

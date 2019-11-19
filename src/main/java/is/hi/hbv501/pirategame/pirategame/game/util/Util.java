@@ -16,7 +16,6 @@ public class Util {
 
     public static int[] worldPosToWorldIndex(Vector2 worldPos){
         int[] coords = new int[]{((int)Math.round(worldPos.getX())/40), ((int)Math.round(worldPos.getY())/40)};
-        System.out.println(new Vector2(coords[0], coords[1]));
         return (coords);
     }
 
