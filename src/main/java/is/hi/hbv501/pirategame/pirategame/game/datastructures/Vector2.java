@@ -51,6 +51,16 @@ public class Vector2 {
     }
 
     /**
+     * Calculate distance between two vectors
+     * @param a First vector
+     * @param b Second vector
+     */
+    public static double DistanceSquared(Vector2 a, Vector2 b){
+        return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
+    }
+
+
+    /**
      * Translates the position of the current vector to the desired vector.
      * @param vector Vector to be translated to
      */

@@ -3,7 +3,9 @@ package is.hi.hbv501.pirategame.pirategame.services;
 import com.sun.tools.javac.util.Pair;
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
+import is.hi.hbv501.pirategame.pirategame.game.objects.Boat;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
+import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
@@ -21,6 +23,7 @@ public class GameService {
     private Map<String, User> users = new HashMap<>();
     private Queue<Pair<String, User>> userQueue = new LinkedList<>();
     private Queue<String> removedUserQueue = new LinkedList<>();
+    private Vector2 defaultScale = new Vector2(2, 2);
 
     private GameState gameState;
 
@@ -38,6 +41,9 @@ public class GameService {
         gameState = new GameState(world, gameObjects);
         world.generateWorld(worldSize, worldSize);
         System.out.println("Finished generating world");
+        GameObject boat = addGameObject(new Boat(this));
+        boat.setPosition( new Vector2(1440, 700));
+
     }
 
     private void Update(){
@@ -47,29 +53,51 @@ public class GameService {
             }
 
             users.values().forEach(u -> {
-                GameObject obj = gameObjects.get(u.getPlayerObjectID());
+                Pirate obj = (Pirate) gameObjects.get(u.getPlayerObjectID());
                 int moveDirX = 0;
                 int moveDirY = 0;
 
                 if(Input.GetKey("W", u.getKeyPresses())){
-                    moveDirY = 3;
+                    moveDirY = obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("A", u.getKeyPresses())){
-                    moveDirX = -3;
+                    moveDirX = -obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("S", u.getKeyPresses())){
-                    moveDirY = -3;
+                    moveDirY = -obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("D", u.getKeyPresses())){
-                    moveDirX = 3;
+                    moveDirX = obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("E", u.getKeyPresses())){
                     //if shop near
                     //enter shop
+                    if(!obj.isInBoat()) {
+                        for (GameObject o : getGameObjectsInRange(obj, 40)) {
+                            if (o instanceof Boat) {
+                                obj.enterBoat(o);
+                                break;
+                            }
+                        }
+                    }
+
+                    if(obj.isInBoat()){
+                        Map<Double, GameObject> tileDistances = new HashMap<>();
+
+                        for(GameObject tile : obj.GetTilesInRange(1)){
+                            if(((Tile) tile).isLand())
+                                tileDistances.put(Vector2.DistanceSquared(obj.getPosition(), tile.getPosition()),
+                                                  tile);
+                        }
+
+                        if(!tileDistances.isEmpty()){
+                            //FIND MINIMUM TILE DISTANCE
+                        }
+                    }
                 }
 
                 if(Input.GetKey("F", u.getKeyPresses())){
@@ -80,7 +108,10 @@ public class GameService {
                 Vector2 prevPos = new Vector2(obj.getPosition());
 
                 //Perform movement
-                obj.translate(moveDirX, - moveDirY);
+                if(!obj.isInBoat())
+                    obj.translate(moveDirX, - moveDirY);
+                else
+                    obj.getBoat().translate(moveDirX, - moveDirY);
 
                 //Check delta position since last iteration
                 u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));
@@ -111,6 +142,17 @@ public class GameService {
         }
     }
 
+    public List<GameObject> getGameObjectsInRange(GameObject gameObject, int range){
+        double rangeSquared = range*range;
+        ArrayList<GameObject> foundObjects = new ArrayList<>();
+        for (GameObject go : getGameObjects().values()){
+            if(Vector2.DistanceSquared(go.getPosition(), gameObject.getPosition()) <= rangeSquared)
+                foundObjects.add(go);
+        }
+
+        return foundObjects;
+    }
+
     public GameState getGameState() {
         return gameState;
     }
@@ -125,8 +167,7 @@ public class GameService {
 
     private void addUser(String sessionID, User user) {
         GameObject go = addGameObject(new Pirate(this));
-        go.setPosition(new Vector2(400,300));
-        go.setScale(new Vector2(2,2));
+        go.setPosition(new Vector2(400,300)); //Center pirate on screen
         user.setPlayerObjectID(go.getID());
 
         go.setPosition( new Vector2(1252, 894));
@@ -172,4 +213,7 @@ public class GameService {
     }
 
 
+    public Vector2 getDefaultScale() {
+        return defaultScale;
+    }
 }

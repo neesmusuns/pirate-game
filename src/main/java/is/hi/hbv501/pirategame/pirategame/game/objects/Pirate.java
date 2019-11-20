@@ -16,13 +16,15 @@ public class Pirate extends GameObject {
 
     private int pants; // lower clothing
 
+    private GameObject boat;
+
     private boolean isInBoat; // whether or not in boat
 
     private boolean isDiving; // whether or not in the diving mode
 
     private boolean isInShop; // whether or not inside the shop
 
-    private int moveSpeed; // speed of movement
+    private int moveSpeed = 2; // speed of movement
 
     private int damage; // damage inflicted in fight
 
@@ -30,12 +32,18 @@ public class Pirate extends GameObject {
 
     public Pirate(GameService gameService) {
         super(gameService);
+        super.setSprite("pirate");
     }
 
     public void Start(){
         super.Start();
 
         setHasCollider(true);
+    }
+
+    public void Update(){
+        if(isInBoat)
+            setPosition(boat.getPosition());
     }
 
     public void move(Vector2 dir) {
@@ -162,4 +170,16 @@ public class Pirate extends GameObject {
         this.worldIndex = worldIndex;
     }
 
+    public void enterBoat(GameObject o) {
+        setBoat(o);
+        setInBoat(true);
+    }
+
+    public GameObject getBoat() {
+        return boat;
+    }
+
+    public void setBoat(GameObject boat) {
+        this.boat = boat;
+    }
 }

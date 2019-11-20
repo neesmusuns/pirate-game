@@ -109,12 +109,12 @@ window.addEventListener('beforeunload', function(e) {
 });
 
 function resizeGame() {
-    var gameArea = document.getElementById('gameArea');
-    var widthToHeight = 4 / 3;
-    var margin = 50;
-    var newWidth = window.innerWidth - 50;
-    var newHeight = window.innerHeight - 50;
-    var newWidthToHeight = newWidth / newHeight;
+    let gameArea = document.getElementById('gameArea');
+    let widthToHeight = 4 / 3;
+    let margin = 50;
+    let newWidth = window.innerWidth - 50;
+    let newHeight = window.innerHeight - 50;
+    let newWidthToHeight = newWidth / newHeight;
 
     if (newWidthToHeight > widthToHeight) {
         newWidth = newHeight * widthToHeight;
@@ -129,7 +129,7 @@ function resizeGame() {
     gameArea.style.marginTop = (-newHeight / 2) + 'px';
     gameArea.style.marginLeft = (-newWidth / 2) + 'px';
 
-    var gameCanvas = document.getElementById('myCanvas');
+    let gameCanvas = document.getElementById('myCanvas');
     gameCanvas.style.width = newWidth - margin;
     gameCanvas.style.height = newHeight - margin;
     gameCanvas.height = 600;
@@ -140,6 +140,6 @@ window.addEventListener('resize', resizeGame, false);
 window.addEventListener('orientationchange', resizeGame, false);
 
 // Kick it off
-resizeGame()
+resizeGame();
 requestPreloads();
 

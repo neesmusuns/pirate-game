@@ -45,6 +45,7 @@ public class GameObject {
         this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
         sprite = "";
+        this.scale = gameService.getDefaultScale();
         Start();
     }
 
@@ -145,7 +146,7 @@ public class GameObject {
      * @param range in tiles
      * @return a list of tiles in range of the game object
      */
-    private ArrayList<GameObject> GetTilesInRange(int range){
+    public ArrayList<GameObject> GetTilesInRange(int range){
         int[] coords = Util.worldPosToWorldIndex(position);
         ArrayList<GameObject> gameObjects = new ArrayList<>();
 

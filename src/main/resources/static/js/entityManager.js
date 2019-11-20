@@ -32,6 +32,9 @@ render: function(ctx) {
 },
 
 updateGameState: function(response) {
+    if(response == null)
+        return;
+
     let gameState = JSON.parse(response);
 
     gameState.gameObjects.forEach(go => {

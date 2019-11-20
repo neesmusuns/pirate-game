@@ -24,7 +24,9 @@ var main = {
     // "Frame Time" is a (potentially high-precision) frame-clock for animations
     _frameTime_ms : null,
     _frameTimeDelta_ms : null,
-    _hasRequestedNextFrame : false
+    _hasRequestedNextFrame : false,
+    _frameTimer_ms : 0,
+    _currentState : null
 };
 
 // Perform one iteration of the mainloop
@@ -49,6 +51,7 @@ main._updateClocks = function (frameTime) {
     
     // Track frameTime and its delta
     this._frameTimeDelta_ms = frameTime - this._frameTime_ms;
+    this._frameTimer_ms += this._frameTimeDelta_ms;
     this._frameTime_ms = frameTime;
 };
 
@@ -58,23 +61,26 @@ main._iterCore = function () {
     let keyObject = {IsLoggedIn : true,
                      Keys : collectInput()};
 
-    let request = function() {
-        $.ajax({
-            type: "POST",
-            cache: false,
-            url: "",
-            data: keyObject, // parameters
-            success:
-                function (response) {
-                    entityManager.updateGameState(response);
-                },
-            error:function () {
-                console.log("failed to send request");
-            }
-        });
-    };
+    if(this._frameTimer_ms >= 16) {
+        this._frameTimer_ms = 0;
+        let request = function () {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "",
+                data: keyObject, // parameters
+                success:
+                    function (response) {
+                        entityManager.updateGameState(response);
+                    },
+                error: function () {
+                    console.log("failed to send request");
+                }
+            });
+        };
 
-    request();
+        request();
+    }
 
 };
 
@@ -90,12 +96,8 @@ function mainIterFrame(frameTime) {
 }
 
 main._requestNextIteration = function () {
-    if(!main._hasRequestedNextFrame) {
-        setTimeout(function () {
-            window.requestAnimationFrame(mainIterFrame);
-        }, 16);
-        main._hasRequestedNextFrame = true;
-    }
+    window.requestAnimationFrame(mainIterFrame);
+
 };
 
 main.init = function () {
