@@ -28,7 +28,11 @@ function collectInput(){
     let keyPresses = "";
 
     keys.forEach(function (value, keyCode) {
-        if(value)
+        if(keyCode == 69) {
+            if(eatKey(keyCode))
+                keyPresses += (String(keyCode)) + " ";
+        }
+        else if(value)
             keyPresses += (String(keyCode)) + " ";
     });
 
