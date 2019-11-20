@@ -74,6 +74,7 @@ public class GameService {
                 }
 
                 if(Input.GetKey("E", u.getKeyPresses())){
+                    System.out.println("Pressed E");
                     //if shop near
                     //enter shop
                     if(!obj.isInBoat()) {
