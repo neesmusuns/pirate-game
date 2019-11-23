@@ -50,6 +50,14 @@ getSprite: function(name){
             return g_sprites.parrot;
         case 'sword1':
             return g_sprites.sword1;
+        case 'shop':
+            return g_sprites.shop;
+        case 'healthfull':
+            return g_sprites.healthfull;
+        case 'healthempty':
+            return g_sprites.healthempty;
+        case 'pier':
+            return g_sprites.pier;
 
         default:
             break;

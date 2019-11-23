@@ -21,7 +21,7 @@ public class GameObject {
     /**
      * The path to the game object's sprite
      */
-    private String sprite;
+    private String sprite = "";
 
     /**
      * The global ID used to refer to the game object
@@ -40,11 +40,18 @@ public class GameObject {
 
     private GameService gameService;
 
+    private boolean isStatic;
+
+    private String layer = "";
+
+    private ArrayList<String> ignoreLayers = new ArrayList<>();
+
+    private int zIndex = 0;
+
     public GameObject(GameService gameService){
         this.gameService = gameService;
         this.ID = InstanceHandler.GetNextID();
         position = new Vector2();
-        sprite = "";
         this.scale = gameService.getDefaultScale();
         Start();
     }
@@ -74,6 +81,16 @@ public class GameObject {
              * TILE COLLISIONS
              */
             for (GameObject go : GetTilesInRange(1)) {
+                boolean shouldIgnore = false;
+                for(String l : ignoreLayers){
+                    if (go.getLayer().equals(l)) {
+                        shouldIgnore = true;
+                        break;
+                    }
+                }
+                if(shouldIgnore)
+                    continue;
+
                 if (CheckCollision(go, new Vector2())) {
                     Unstick();
                     OnCollision(go);
@@ -91,6 +108,16 @@ public class GameObject {
             Collection<GameObject> gameObjects = gameService.getGameObjects().values();
             gameObjects.remove(this);
             for(GameObject go : gameObjects){
+                boolean shouldIgnore = false;
+                for(String l : ignoreLayers){
+                    if (go.getLayer().equals(l)) {
+                        shouldIgnore = true;
+                        break;
+                    }
+                }
+                if(shouldIgnore)
+                    continue;
+
                 if (CheckCollision(go, new Vector2())) {
                     Unstick();
                     OnCollision(go);
@@ -207,13 +234,23 @@ public class GameObject {
         }
     }
 
-    public boolean stuckTranslate(int x, int y){
+    private boolean stuckTranslate(int x, int y){
         Vector2 translation = new Vector2(x, y);
         if(hasCollider) {
             /*
              * TILE COLLISIONS
              */
             for (GameObject go : GetTilesInRange(1)) {
+                boolean shouldIgnore = false;
+                for(String l : ignoreLayers){
+                    if (go.getLayer().equals(l)) {
+                        shouldIgnore = true;
+                        break;
+                    }
+                }
+                if(shouldIgnore)
+                    continue;
+
                 if (CheckCollision(go, translation)) {
                     OnCollision(go);
                     return false;
@@ -226,6 +263,16 @@ public class GameObject {
             Collection<GameObject> gameObjects = gameService.getGameObjects().values();
             gameObjects.remove(this);
             for(GameObject go : gameObjects){
+                boolean shouldIgnore = false;
+                for(String l : ignoreLayers){
+                    if (go.getLayer().equals(l)) {
+                        shouldIgnore = true;
+                        break;
+                    }
+                }
+                if(shouldIgnore)
+                    continue;
+
                 if(go.getHasCollider()){
                     if(CheckCollision(go, translation)){
                         OnCollision(go);
@@ -262,5 +309,33 @@ public class GameObject {
 
     public void setService(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean isStatic) {
+        this.isStatic = isStatic;
+    }
+
+    public String getLayer() {
+        return layer;
+    }
+
+    public void setLayer(String layer) {
+        this.layer = layer;
+    }
+
+    public void addIgnoreLayer(String layer){
+        ignoreLayers.add(layer);
+    }
+
+    public int getZIndex() {
+        return zIndex;
+    }
+
+    public void setZIndex(int zIndex) {
+        this.zIndex = zIndex;
     }
 }

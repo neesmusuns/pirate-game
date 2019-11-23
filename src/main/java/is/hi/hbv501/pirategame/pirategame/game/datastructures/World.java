@@ -1,9 +1,14 @@
 package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
+import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.game.util.OpenSimplexNoise;
 import is.hi.hbv501.pirategame.pirategame.game.util.SquareGradient;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class World {
 
@@ -42,7 +47,16 @@ public class World {
      * @param x amount of tiles in the x-dimension
      * @param y amount of tiles in the y-dimension
      */
-    public void generateWorld(int x, int y){
+    public void generateWorld(int x, int y) throws UnsupportedEncodingException {
+        InputStream in =
+                getClass().getResourceAsStream("/data/world.txt");
+        Reader fr = new InputStreamReader(in, StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(fr);
+
+        br.lines().forEach(l -> {
+            String[] line = l.split("");
+
+        });
         width = x;
         height = y;
         tiles = new Tile[x][y];
@@ -57,11 +71,9 @@ public class World {
 
                 if(n > 0.7){
                     t.setLand(true);
-                    t.setPassable(true);
                     t.setSprite("beach1");
                 }else{
                     t.setLand(false);
-                    t.setPassable(false);
                     t.setSprite("sea1");
                 }
 
@@ -89,7 +101,6 @@ public class World {
 
                     if (borderingLandTiles >= 3) {
                         tiles[i][j].setLand(true);
-                        tiles[i][j].setPassable(true);
                         tiles[i][j].setSprite("beach1");
                     }
                 }
@@ -107,12 +118,27 @@ public class World {
 
                     if (!shouldStay) {
                         tiles[i][j].setLand(false);
-                        tiles[i][j].setPassable(false);
                         tiles[i][j].setSprite("sea1");
                     }
                 }
             }
         }
+
+
+
+        Shop shop = new Shop(gameService);
+        shop.setLand(true);
+        shop.setPosition(new Vector2(tileSize.getX()*30*tileScale, tileSize.getY()*30*tileScale));
+        shop.setPassable(false);
+        shop.setZIndex(1);
+        tiles[30][30] = shop;
+
+
+        tiles[36][18].setLayer("land");
+        tiles[36][18].setLand(true);
+        tiles[36][18].setSprite("pier");
+        tiles[36][18].setZIndex(1);
+
     }
 
     public Tile[][] getTiles() {

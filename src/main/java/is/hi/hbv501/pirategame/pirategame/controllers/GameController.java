@@ -2,6 +2,7 @@ package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
+import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
@@ -49,7 +50,8 @@ public class GameController {
          */
         if (isQuitting && isLoggedIn) {
             gameService.requestRemoveUser(sessionID);
-
+        }else if(isQuitting){
+            //Do nothing
         /*
          * LOGGING IN
          */
@@ -90,10 +92,14 @@ public class GameController {
                 }
             }
 
+            JSONObject stats = getUserStats(sessionID);
+
             JSONObject posShift = new JSONObject();
             posShift.put("x", 0);
             posShift.put("y", 0);
 
+            response.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
+            response.put("stats", stats);
             response.put("IsLoggedIn", "true");
             response.put("gameObjects", gameObjectsArray);
             response.put("removedGameObjectIDs", new JSONArray());
@@ -115,10 +121,13 @@ public class GameController {
 
             currentState.getRemovedGameObjectIDs().forEach(removedGameObjectIDs::put);
 
+            JSONObject stats = getUserStats(sessionID);
+
             JSONObject posShift = new JSONObject();
             posShift.put("x", gameService.getUsers().get(sessionID).getDeltaMovement().getX());
             posShift.put("y", gameService.getUsers().get(sessionID).getDeltaMovement().getY());
 
+            gameState.put("stats", stats);
             gameState.put("gameObjects", gameObjectsArray);
             gameState.put("removedGameObjectIDs", removedGameObjectIDs);
             gameState.put("posShift", posShift);
@@ -131,6 +140,17 @@ public class GameController {
         return "Bad Request";
     }
 
+    private JSONObject getUserStats(String sessionID) throws JSONException {
+        JSONObject stats = new JSONObject();
+        User user = gameService.getUsers().get(sessionID);
+        Pirate player = (Pirate) gameService.getGameObjects().get(user.getPlayerObjectID());
+
+        stats.put("health", player.getHealth());
+        stats.put("drink", user.getDrinks());
+
+        return stats;
+    }
+
     private void putGameObject(JSONArray gameObjectsArray, GameObject obj) {
         try {
             JSONObject gameObject = new JSONObject();
@@ -140,6 +160,8 @@ public class GameController {
             gameObject.put("y", obj.getPosition().getY());
             gameObject.put("scaleX", obj.getScale().getX());
             gameObject.put("scaleY", obj.getScale().getY());
+            gameObject.put("isStatic", obj.isStatic());
+            gameObject.put("zIndex", obj.getZIndex());
 
 
             gameObjectsArray.put(gameObject);

@@ -68,7 +68,11 @@ function requestPreloads() {
         beach1:'../images/tiles/beach1.png',
         black_shirt:'../images/black_shirt.png',
         parrot:'../images/parrot1.png',
-        sword1:'../images/sword1.png'
+        sword1:'../images/sword1.png',
+        shop:'../images/shop.png',
+        healthfull:'../images/healthfull.png',
+        healthempty:'../images/healthempty.png',
+        pier:'../images/tiles/pier.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -86,6 +90,10 @@ function preloadDone() {
     g_sprites.black_shirt = new Sprite(g_images.black_shirt);
     g_sprites.parrot =  new Sprite(g_images.parrot);
     g_sprites.sword1 = new Sprite(g_images.sword1);
+    g_sprites.shop = new Sprite(g_images.shop);
+    g_sprites.healthfull = new Sprite(g_images.healthfull);
+    g_sprites.healthempty = new Sprite(g_images.healthempty);
+    g_sprites.pier = new Sprite(g_images.pier);
 
     main.init();
 }

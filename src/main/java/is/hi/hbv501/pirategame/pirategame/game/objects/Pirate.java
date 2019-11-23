@@ -6,7 +6,7 @@ import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
 public class Pirate extends GameObject {
 
-    private int health; // pirate's health
+    private int health = 2; // pirate's health
 
     private int drunkedness; // pirate's drunkedness level
 
@@ -33,20 +33,26 @@ public class Pirate extends GameObject {
     public Pirate(GameService gameService) {
         super(gameService);
         super.setSprite("pirate");
+        setZIndex(2);
     }
 
     public void Start(){
         super.Start();
-
         setHasCollider(true);
+        addIgnoreLayer("land");
     }
 
     public void Update(){
-        if(isInBoat)
-            setPosition(boat.getPosition());
+        setHasCollider(!isInBoat);
     }
 
     public void move(Vector2 dir) {
+
+    }
+
+    public void moveRelativeToBoat(){
+        if(isInBoat)
+            setPosition(new Vector2(boat.getPosition().getX(), boat.getPosition().getY() - 20));
 
     }
 
@@ -58,8 +64,8 @@ public class Pirate extends GameObject {
 
     }
 
-    public void enterShop() {
-
+    public void enterShop(Shop s) {
+        System.out.println("Bought a boat");
     }
 
     public void exitShop() {

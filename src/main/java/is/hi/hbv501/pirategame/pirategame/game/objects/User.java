@@ -33,7 +33,7 @@ public class User {
     private int shirt;
     private int pants;
     private int boat;
-    private int drinks;
+    private int drinks = 1;
     private int treasure;
     private int worldIndex;
 

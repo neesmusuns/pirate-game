@@ -3,14 +3,12 @@ package is.hi.hbv501.pirategame.pirategame.services;
 import com.sun.tools.javac.util.Pair;
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
-import is.hi.hbv501.pirategame.pirategame.game.objects.Boat;
-import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
-import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
+import is.hi.hbv501.pirategame.pirategame.game.objects.*;
 import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
-import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 
+import is.hi.hbv501.pirategame.pirategame.game.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +39,6 @@ public class GameService {
         gameState = new GameState(world, gameObjects);
         world.generateWorld(worldSize, worldSize);
         System.out.println("Finished generating world");
-        GameObject boat = addGameObject(new Boat(this));
-        boat.setPosition( new Vector2(1440, 700));
-
     }
 
     private void Update(){
@@ -74,19 +69,26 @@ public class GameService {
                 }
 
                 if(Input.GetKey("E", u.getKeyPresses())){
-                    System.out.println("Pressed E");
                     //if shop near
                     //enter shop
                     if(!obj.isInBoat()) {
-                        for (GameObject o : getGameObjectsInRange(obj, 40)) {
+                        for (GameObject o : getGameObjectsInRange(obj, 60)) {
                             if (o instanceof Boat) {
                                 obj.enterBoat(o);
                                 break;
                             }
                         }
-                    }
 
-                    if(obj.isInBoat()){
+                        for(GameObject tile : obj.GetTilesInRange(1)){
+                            if(tile instanceof Shop) {
+                                obj.enterShop((Shop) tile);
+                                GameObject boat = addGameObject(new Boat(this));
+                                boat.setPosition( new Vector2(1440, 680));
+                                break;
+                            }
+                        }
+                    }
+                    else {
                         Map<Double, GameObject> tileDistances = new HashMap<>();
 
                         for(GameObject tile : obj.GetTilesInRange(1)){
@@ -96,7 +98,10 @@ public class GameService {
                         }
 
                         if(!tileDistances.isEmpty()){
-                            //FIND MINIMUM TILE DISTANCE
+                            Double[] keys = tileDistances.keySet().toArray(new Double[tileDistances.size()]);
+                            Arrays.sort(keys);
+                            obj.setPosition(tileDistances.get(keys[0]).getPosition());
+                            obj.setInBoat(false);
                         }
                     }
                 }
@@ -111,8 +116,10 @@ public class GameService {
                 //Perform movement
                 if(!obj.isInBoat())
                     obj.translate(moveDirX, - moveDirY);
-                else
-                    obj.getBoat().translate(moveDirX, - moveDirY);
+                else {
+                    obj.getBoat().translate(moveDirX, -moveDirY);
+                    obj.moveRelativeToBoat();
+                }
 
                 //Check delta position since last iteration
                 u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));

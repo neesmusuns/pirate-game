@@ -19,6 +19,8 @@ public class Tile extends GameObject {
 
     public Tile(GameService gameService) {
         super(gameService);
+        setStatic(true);
+        setHasCollider(true);
     }
 
 
@@ -28,7 +30,7 @@ public class Tile extends GameObject {
 
     public void setPassable(boolean passable) {
         isPassable = passable;
-        setHasCollider(!passable);
+        setLayer("impassable");
     }
 
     public boolean isLand() {
@@ -37,5 +39,7 @@ public class Tile extends GameObject {
 
     public void setLand(boolean land) {
         isLand = land;
+        if(isLand) setLayer("land");
+        else setLayer("water");
     }
 }
