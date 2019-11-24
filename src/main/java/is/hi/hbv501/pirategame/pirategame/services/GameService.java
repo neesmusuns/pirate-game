@@ -3,12 +3,10 @@ package is.hi.hbv501.pirategame.pirategame.services;
 import com.sun.tools.javac.util.Pair;
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
-import is.hi.hbv501.pirategame.pirategame.game.objects.*;
-import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
-
-import is.hi.hbv501.pirategame.pirategame.game.util.Util;
+import is.hi.hbv501.pirategame.pirategame.game.objects.*;
+import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +15,14 @@ import java.util.*;
 @Service
 public class GameService {
     private Map<Long, GameObject> gameObjects = new HashMap<>();
-    private World world = new World(this);
+    int playerLimit = 10;
+    private World[] worlds = new World[10];
     private Map<String, User> users = new HashMap<>();
     private Queue<Pair<String, User>> userQueue = new LinkedList<>();
     private Queue<String> removedUserQueue = new LinkedList<>();
     private Vector2 defaultScale = new Vector2(2, 2);
 
     private GameState gameState;
-
-    private int worldSize = 100;
 
     @Autowired
     private UserService userService;
@@ -36,8 +33,12 @@ public class GameService {
     }
 
     private void Start(){
-        gameState = new GameState(world, gameObjects);
-        world.generateWorld(worldSize, worldSize);
+        worlds[0] = new World(this);
+        worlds[0].generateWorld("world.txt", 0);
+        worlds[1] = new World(this);
+        worlds[1].generateWorld("divingworld.txt", 1);
+
+        gameState = new GameState(worlds, gameObjects);
         System.out.println("Finished generating world");
     }
 
@@ -49,8 +50,43 @@ public class GameService {
 
             users.values().forEach(u -> {
                 Pirate obj = (Pirate) gameObjects.get(u.getPlayerObjectID());
+                obj.setTooltip("");
+                Vector2 prevPos = new Vector2(obj.getPosition());
                 int moveDirX = 0;
                 int moveDirY = 0;
+                boolean isNearBoat = false;
+                GameObject foundBoat = null;
+                boolean isNearShop = false;
+                Shop foundShop = null;
+
+                /*
+                 * CHECK OBJECTS IN PROXIMITY
+                 */
+                if(!obj.isInBoat()) {
+                    //If near boat
+                    for (GameObject o : getGameObjectsInRange(obj, 60)) {
+                        if (o instanceof Boat) {
+                            isNearBoat = true;
+                            foundBoat = o;
+                            obj.setTooltip("Press 'E' to enter boat");
+                            break;
+                        }
+                    }
+
+                    //If near shop
+                    for(GameObject tile : obj.GetTilesInRange(1)){
+                        if(tile instanceof Shop) {
+                            obj.setTooltip("Press 'E' to enter shop");
+                            isNearShop = true;
+                            foundShop = (Shop) tile;
+                            break;
+                        }
+                    }
+                }
+
+                /*
+                 * CHECK INPUT
+                 */
 
                 if(Input.GetKey("W", u.getKeyPresses())){
                     moveDirY = obj.getMoveSpeed();
@@ -69,40 +105,19 @@ public class GameService {
                 }
 
                 if(Input.GetKey("E", u.getKeyPresses())){
-                    //if shop near
-                    //enter shop
-                    if(!obj.isInBoat()) {
-                        for (GameObject o : getGameObjectsInRange(obj, 60)) {
-                            if (o instanceof Boat) {
-                                obj.enterBoat(o);
-                                break;
-                            }
-                        }
+                    u.setWorldIndex(1);
+                    obj.setWorldIndex(1);
 
-                        for(GameObject tile : obj.GetTilesInRange(1)){
-                            if(tile instanceof Shop) {
-                                obj.enterShop((Shop) tile);
-                                GameObject boat = addGameObject(new Boat(this));
-                                boat.setPosition( new Vector2(1440, 680));
-                                break;
-                            }
-                        }
+                    if(isNearBoat){
+                        obj.enterBoat(foundBoat);
+                    } else if(isNearShop){
+                        obj.enterShop(foundShop);
+                        GameObject boat = addGameObject(new Boat(this));
+                        boat.setPosition( new Vector2(1520, 1320));
                     }
+                    //If in boat and press E
                     else {
-                        Map<Double, GameObject> tileDistances = new HashMap<>();
-
-                        for(GameObject tile : obj.GetTilesInRange(1)){
-                            if(((Tile) tile).isLand())
-                                tileDistances.put(Vector2.DistanceSquared(obj.getPosition(), tile.getPosition()),
-                                                  tile);
-                        }
-
-                        if(!tileDistances.isEmpty()){
-                            Double[] keys = tileDistances.keySet().toArray(new Double[tileDistances.size()]);
-                            Arrays.sort(keys);
-                            obj.setPosition(tileDistances.get(keys[0]).getPosition());
-                            obj.setInBoat(false);
-                        }
+                        obj.exitBoat();
                     }
                 }
 
@@ -110,8 +125,6 @@ public class GameService {
                     //if another player near
                     //fight player
                 }
-
-                Vector2 prevPos = new Vector2(obj.getPosition());
 
                 //Perform movement
                 if(!obj.isInBoat())
@@ -178,8 +191,8 @@ public class GameService {
         go.setPosition(new Vector2(400,300)); //Center pirate on screen
         user.setPlayerObjectID(go.getID());
 
-        go.setPosition( new Vector2(1252, 894));
-        user.setDeltaMovement(new Vector2(-(1252-400), -(894-300)));
+        go.setPosition( new Vector2(1360, 1360));
+        user.setDeltaMovement(new Vector2(-(1360-400), -(1360-300)));
         users.put(sessionID, user);
     }
 
@@ -210,14 +223,6 @@ public class GameService {
 
     public void addKeysToUser(String keys, String sessionID){
         users.get(sessionID).setKeyPresses(keys);
-    }
-
-    public int getWorldSize() {
-        return worldSize;
-    }
-
-    public void setWorldSize(int worldSize) {
-        this.worldSize = worldSize;
     }
 
 

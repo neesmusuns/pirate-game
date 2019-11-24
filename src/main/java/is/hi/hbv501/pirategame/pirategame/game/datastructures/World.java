@@ -2,13 +2,13 @@ package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
-import is.hi.hbv501.pirategame.pirategame.game.util.OpenSimplexNoise;
-import is.hi.hbv501.pirategame.pirategame.game.util.SquareGradient;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class World {
 
@@ -44,23 +44,85 @@ public class World {
 
     /**
      * Generates a world
-     * @param x amount of tiles in the x-dimension
-     * @param y amount of tiles in the y-dimension
      */
-    public void generateWorld(int x, int y) throws UnsupportedEncodingException {
-        InputStream in =
-                getClass().getResourceAsStream("/data/world.txt");
-        Reader fr = new InputStreamReader(in, StandardCharsets.UTF_8);
-        BufferedReader br = new BufferedReader(fr);
+    public void generateWorld(String textFile, int worldIndex) {
 
-        br.lines().forEach(l -> {
-            String[] line = l.split("");
+        File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(textFile)).getFile());
+        FileReader fr = null;
+        FileReader frCount = null;
+        try {
+            fr = new FileReader(file);
+            frCount = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert fr != null;
+        Scanner sc = new Scanner(fr);
+        Scanner counterSc = new Scanner(frCount);
 
-        });
+        int len = 0;
+        while (counterSc.hasNextLine()) {
+            len++;
+            counterSc.nextLine();
+        }
+
+        String[] lines = new String[len];
+        int counter = 0;
+        while(sc.hasNextLine()){
+            lines[counter] = sc.nextLine();
+            counter++;
+        }
+
+        int x = lines[0].length(), y = lines.length;
+        tiles = new Tile[x][y];
         width = x;
         height = y;
-        tiles = new Tile[x][y];
 
+
+        for(int j = 0; j < lines.length ; j++){
+            String[] line = lines[j].split("");
+            for(int i = 0; i < line.length; i++){
+                String tileChar = line[i];
+                Tile t = new Tile(gameService, worldIndex);
+                t.setScale(new Vector2(tileScale, tileScale));
+
+                switch (tileChar) {
+                    case ".":
+                        t.setLand(true);
+                        t.setSprite("beach1");
+                        break;
+                    case "*":
+                        t.setLand(false);
+                        t.setSprite("sea1");
+                        break;
+                    case "-":
+                        t.setLand(true);
+                        t.setSprite("beach1");
+                        break;
+                    case "s":
+                        t = new Shop(gameService, worldIndex);
+                        t.setLand(true);
+                        t.setPassable(false);
+                        t.setZIndex(1);
+                        break;
+                    case "p":
+                        t.setLayer("land");
+                        t.setLand(true);
+                        t.setSprite("pier");
+                        t.setZIndex(1);
+                        break;
+                    default:
+                        t.setLand(true);
+                        t.setSprite("beach1");
+                        break;
+                }
+
+                t.setPosition(new Vector2(tileSize.getX()*i*tileScale, tileSize.getY()*j*tileScale));
+                tiles[i][j] = t;
+            }
+        }
+
+        /*
         for(int i = 0; i < x; i++){
             for(int j = 0; j < y; j++){
                 OpenSimplexNoise noise = new OpenSimplexNoise(seed);
@@ -138,6 +200,7 @@ public class World {
         tiles[36][18].setLand(true);
         tiles[36][18].setSprite("pier");
         tiles[36][18].setZIndex(1);
+        */
 
     }
 

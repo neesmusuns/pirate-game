@@ -62,8 +62,10 @@ updateGameState: function(response) {
         this._playerID = gameState.playerID
     }
 
-    this._stats.health = gameState.stats.health;
-    this._stats.drink = gameState.stats.drink;
+    if(gameState.stats != null) {
+        this._stats.health = gameState.stats.health;
+        this._stats.drink = gameState.stats.drink;
+    }
 
     gameState.gameObjects.forEach(go => {
         if(go.id === this._playerID){
@@ -77,6 +79,8 @@ updateGameState: function(response) {
             this._gameObjects[foundIndex].scaleX = go.scaleX;
             this._gameObjects[foundIndex].scaleY = go.scaleY;
             this._gameObjects[foundIndex].zIndex = go.zIndex;
+            if(this._playerID == go.id)
+                this._gameObjects[foundIndex].tooltip = go.tooltip;
         } else {
             let obj = new GameObject({
                 id : go.id,
@@ -86,7 +90,8 @@ updateGameState: function(response) {
                 scaleX: go.scaleX,
                 scaleY: go.scaleY,
                 isStatic : go.isStatic,
-                zIndex : go.zIndex
+                zIndex : go.zIndex,
+                tooltip: ""
             });
             this._gameObjects.push(obj);
         }

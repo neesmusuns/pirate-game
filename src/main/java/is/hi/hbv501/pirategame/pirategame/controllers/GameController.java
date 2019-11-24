@@ -1,17 +1,16 @@
 package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
+import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
-import is.hi.hbv501.pirategame.pirategame.services.GameService;
-import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
+import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.services.UserService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -83,23 +82,19 @@ public class GameController {
             //Package up the World and send to user
             JSONObject response = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
-            World world = currentState.getWorld();
-            Tile[][] tiles = world.getTiles();
-            for(int i = 0; i < world.getWidth(); i++) {
-                for (int j = 0; j < world.getHeight(); j++) {
-                    GameObject obj = tiles[i][j];
-                    putGameObject(gameObjectsArray, obj);
-                }
-            }
+            World world = currentState.getWorld(0);
+            putWorld(gameObjectsArray, world);
 
-            JSONObject stats = getUserStats(sessionID);
+            if(gameService.getUsers().containsKey(sessionID)) {
+                JSONObject stats = getUserStats(sessionID);
+                response.put("stats", stats);
+                response.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
+            }
 
             JSONObject posShift = new JSONObject();
             posShift.put("x", 0);
             posShift.put("y", 0);
 
-            response.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
-            response.put("stats", stats);
             response.put("IsLoggedIn", "true");
             response.put("gameObjects", gameObjectsArray);
             response.put("removedGameObjectIDs", new JSONArray());
@@ -110,16 +105,36 @@ public class GameController {
          * PLAYING
          */
         else if(gameService.getUsers().containsKey(sessionID)){
+            User user = gameService.getUsers().get(sessionID);
+
             //Collect user request's input and assign it to user object
             gameService.addKeysToUser(request.getParameter("Keys"), sessionID);
 
             //Send current game state to user
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
-            currentState.getGameObjects().values().forEach(obj -> putGameObject(gameObjectsArray, obj));
             JSONArray removedGameObjectIDs = new JSONArray();
+            currentState.getGameObjects().values().forEach(obj -> {
+                if(obj.getWorldIndex() == user.getWorldIndex())
+                    putGameObject(gameObjectsArray, obj);
+                else
+                    removedGameObjectIDs.put(obj.getID());
+            });
+
 
             currentState.getRemovedGameObjectIDs().forEach(removedGameObjectIDs::put);
+
+            if(user.hasChangedWorld()) {
+                for(Tile[] tiles : currentState.getWorld(user.getPreviousWorldIndex()).getTiles()){
+                    for (Tile tile : tiles) {
+                        removedGameObjectIDs.put(tile.getID());
+                    }
+
+                }
+                World world = currentState.getWorld(user.getWorldIndex());
+                putWorld(gameObjectsArray, world);
+                user.setHasChangedWorld(false);
+            }
 
             JSONObject stats = getUserStats(sessionID);
 
@@ -127,6 +142,7 @@ public class GameController {
             posShift.put("x", gameService.getUsers().get(sessionID).getDeltaMovement().getX());
             posShift.put("y", gameService.getUsers().get(sessionID).getDeltaMovement().getY());
 
+            gameState.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
             gameState.put("stats", stats);
             gameState.put("gameObjects", gameObjectsArray);
             gameState.put("removedGameObjectIDs", removedGameObjectIDs);
@@ -138,6 +154,16 @@ public class GameController {
 
         //Returned when request is incorrectly formatted or contains invalid data
         return "Bad Request";
+    }
+
+    private void putWorld(JSONArray gameObjectsArray, World world) {
+        Tile[][] tiles = world.getTiles();
+        for (int i = 0; i < world.getWidth(); i++) {
+            for (int j = 0; j < world.getHeight(); j++) {
+                GameObject obj = tiles[i][j];
+                putGameObject(gameObjectsArray, obj);
+            }
+        }
     }
 
     private JSONObject getUserStats(String sessionID) throws JSONException {
@@ -162,7 +188,7 @@ public class GameController {
             gameObject.put("scaleY", obj.getScale().getY());
             gameObject.put("isStatic", obj.isStatic());
             gameObject.put("zIndex", obj.getZIndex());
-
+            gameObject.put("tooltip", obj.getTooltip());
 
             gameObjectsArray.put(gameObject);
         } catch (JSONException e) {

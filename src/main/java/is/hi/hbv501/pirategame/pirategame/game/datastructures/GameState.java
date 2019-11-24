@@ -10,21 +10,21 @@ import java.util.Map;
  * A data structure to represent a state of the game
  */
 public class GameState {
-    private World world;
+    private World[] worlds;
     private Map<Long, GameObject> gameObjects;
     private List<Long> removedGameObjectIDs = new ArrayList<>();
 
-    public GameState(World world, Map<Long, GameObject> gameObjects) {
-        this.world = world;
+    public GameState(World[] worlds, Map<Long, GameObject> gameObjects) {
+        this.worlds = worlds;
         this.gameObjects = gameObjects;
     }
 
-    public World getWorld() {
-        return world;
+    public World getWorld(int worldIndex) {
+        return worlds[worldIndex];
     }
 
-    public void setWorld(World world) {
-        this.world = world;
+    public void setWorld(World[] worlds) {
+        this.worlds = worlds;
     }
 
     public Map<Long, GameObject> getGameObjects() {

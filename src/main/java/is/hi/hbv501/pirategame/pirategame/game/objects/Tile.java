@@ -23,6 +23,11 @@ public class Tile extends GameObject {
         setHasCollider(true);
     }
 
+    public Tile(GameService gameService, int worldIndex) {
+        super(gameService);
+        super.setWorldIndex(worldIndex);
+    }
+
 
     public boolean isPassable() {
         return isPassable;

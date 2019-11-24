@@ -10,4 +10,8 @@ public class Shop extends Tile {
     }
 
 
+    public Shop(GameService gameService, int worldIndex) {
+        super(gameService);
+        super.setWorldIndex(worldIndex);
+    }
 }

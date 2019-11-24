@@ -45,6 +45,12 @@ GameObject.prototype.render = function (ctx) {
 	    ctx, this.x, this.y
     );
 
+    if(this.tooltip !== "") {
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(this.tooltip, this.x, this.y - 20);
+    }
+
     this.sprite.scaleX = origScaleX;
     this.sprite.scaleY = origScaleY;
 };

@@ -38,15 +38,42 @@ public class GameObject {
      */
     private boolean hasCollider;
 
+    /**
+     * A reference to the game service currently hosting the game object
+     */
     private GameService gameService;
 
+    /**
+     * A static game object will never move, and should be rendered statically
+     */
     private boolean isStatic;
 
-    private String layer = "";
+    /**
+     * The collision layer of the game object
+     */
+    private String layer = "default";
 
+    /**
+     * Layers where the game object's collider ignores collision
+     */
     private ArrayList<String> ignoreLayers = new ArrayList<>();
 
+    /**
+     * The z index of the game object which decides rendering order
+     */
     private int zIndex = 0;
+
+    /**
+     * Tooltip to display over game object
+     */
+    private String tooltip = "";
+
+    private int worldIndex = 0;
+
+    public GameObject(GameService gameService, int worldIndex){
+        this(gameService);
+        this.worldIndex = worldIndex;
+    }
 
     public GameObject(GameService gameService){
         this.gameService = gameService;
@@ -177,9 +204,12 @@ public class GameObject {
         int[] coords = Util.worldPosToWorldIndex(position);
         ArrayList<GameObject> gameObjects = new ArrayList<>();
 
-        for(int i = Math.max(coords[0]-range, 0); i <= Math.min(coords[0] + range, gameService.getWorldSize()); i++){
-            for(int j = Math.max(coords[1]-range, 0); j <= Math.min(coords[1] + range, gameService.getWorldSize()); j++){
-                gameObjects.add(gameService.getGameState().getWorld().getTiles()[i][j]);
+        int width = gameService.getGameState().getWorld(worldIndex).getWidth();
+        int height = gameService.getGameState().getWorld(worldIndex).getHeight();
+
+        for(int i = Math.max(coords[0]-range, 0); i <= Math.min(coords[0] + range, width); i++){
+            for(int j = Math.max(coords[1]-range, 0); j <= Math.min(coords[1] + range, height); j++){
+                gameObjects.add(gameService.getGameState().getWorld(worldIndex).getTiles()[i][j]);
             }
         }
         return gameObjects;
@@ -337,5 +367,21 @@ public class GameObject {
 
     public void setZIndex(int zIndex) {
         this.zIndex = zIndex;
+    }
+
+    public void setTooltip(String tooltip){
+        this.tooltip = tooltip;
+    }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public int getWorldIndex() {
+        return worldIndex;
+    }
+
+    public void setWorldIndex(int worldIndex) {
+        this.worldIndex = worldIndex;
     }
 }

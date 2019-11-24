@@ -4,6 +4,10 @@ import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Pirate extends GameObject {
 
     private int health = 2; // pirate's health
@@ -82,8 +86,8 @@ public class Pirate extends GameObject {
 
     public Vector2[] getCollider(){
         return new Vector2[]{
-                Vector2.Sub(getPosition(), new Vector2(15, 15)),
-                Vector2.Add(getPosition(), new Vector2(15, 15))
+                Vector2.Sub(getPosition(), new Vector2(13, 13)),
+                Vector2.Add(getPosition(), new Vector2(13, 13))
         };
     }
 
@@ -187,5 +191,24 @@ public class Pirate extends GameObject {
 
     public void setBoat(GameObject boat) {
         this.boat = boat;
+    }
+
+    public void exitBoat() {
+        if(boat != null) {
+            Map<Double, GameObject> tileDistances = new HashMap<>();
+
+            for (GameObject tile : boat.GetTilesInRange(1)) {
+                if (((Tile) tile).isLand())
+                    tileDistances.put(Vector2.DistanceSquared(boat.getPosition(), tile.getPosition()),
+                            tile);
+            }
+
+            if (!tileDistances.isEmpty()) {
+                Double[] keys = tileDistances.keySet().toArray(new Double[tileDistances.size()]);
+                Arrays.sort(keys);
+                setPosition(tileDistances.get(keys[0]).getPosition());
+                setInBoat(false);
+            }
+        }
     }
 }

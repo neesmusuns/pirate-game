@@ -35,7 +35,9 @@ public class User {
     private int boat;
     private int drinks = 1;
     private int treasure;
-    private int worldIndex;
+    private int worldIndex = 0;
+    private boolean hasChangedWorld;
+    private int previousWorldIndex = 0;
 
     private Vector2 deltaMovement = new Vector2();
 
@@ -153,7 +155,9 @@ public class User {
     }
 
     public void setWorldIndex(int worldIndex) {
+        previousWorldIndex = worldIndex;
         this.worldIndex = worldIndex;
+        hasChangedWorld = true;
     }
 
     public Vector2 getDeltaMovement() {
@@ -162,5 +166,21 @@ public class User {
 
     public void setDeltaMovement(Vector2 deltaMovement) {
         this.deltaMovement = deltaMovement;
+    }
+
+    public void setHasChangedWorld(boolean hasChangedWorld) {
+        this.hasChangedWorld = hasChangedWorld;
+    }
+
+    public boolean hasChangedWorld() {
+        return hasChangedWorld;
+    }
+
+    public int getPreviousWorldIndex() {
+        return previousWorldIndex;
+    }
+
+    public void setPreviousWorldIndex(int previousWorldIndex) {
+        this.previousWorldIndex = previousWorldIndex;
     }
 }
