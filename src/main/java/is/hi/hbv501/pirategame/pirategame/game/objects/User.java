@@ -155,7 +155,8 @@ public class User {
     }
 
     public void setWorldIndex(int worldIndex) {
-        previousWorldIndex = worldIndex;
+        previousWorldIndex = this.worldIndex;
+
         this.worldIndex = worldIndex;
         hasChangedWorld = true;
     }

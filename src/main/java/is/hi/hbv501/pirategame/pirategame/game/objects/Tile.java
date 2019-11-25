@@ -17,14 +17,14 @@ public class Tile extends GameObject {
      */
     private boolean isLand;
 
-    public Tile(GameService gameService) {
+    Tile(GameService gameService) {
         super(gameService);
         setStatic(true);
         setHasCollider(true);
     }
 
     public Tile(GameService gameService, int worldIndex) {
-        super(gameService);
+        this(gameService);
         super.setWorldIndex(worldIndex);
     }
 

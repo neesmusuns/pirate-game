@@ -70,6 +70,8 @@ public class GameObject {
 
     private int worldIndex = 0;
 
+    private boolean isRendered = true;
+
     public GameObject(GameService gameService, int worldIndex){
         this(gameService);
         this.worldIndex = worldIndex;
@@ -135,6 +137,8 @@ public class GameObject {
             Collection<GameObject> gameObjects = gameService.getGameObjects().values();
             gameObjects.remove(this);
             for(GameObject go : gameObjects){
+                if(go.getWorldIndex() != worldIndex)
+                    continue;
                 boolean shouldIgnore = false;
                 for(String l : ignoreLayers){
                     if (go.getLayer().equals(l)) {
@@ -207,8 +211,8 @@ public class GameObject {
         int width = gameService.getGameState().getWorld(worldIndex).getWidth();
         int height = gameService.getGameState().getWorld(worldIndex).getHeight();
 
-        for(int i = Math.max(coords[0]-range, 0); i <= Math.min(coords[0] + range, width); i++){
-            for(int j = Math.max(coords[1]-range, 0); j <= Math.min(coords[1] + range, height); j++){
+        for(int i = Math.max(coords[0]-range, 0); i <= Math.min(coords[0] + range, width - 1); i++){
+            for(int j = Math.max(coords[1]-range, 0); j <= Math.min(coords[1] + range, height - 1); j++){
                 gameObjects.add(gameService.getGameState().getWorld(worldIndex).getTiles()[i][j]);
             }
         }
@@ -293,6 +297,8 @@ public class GameObject {
             Collection<GameObject> gameObjects = gameService.getGameObjects().values();
             gameObjects.remove(this);
             for(GameObject go : gameObjects){
+                if(go.worldIndex != worldIndex)
+                    continue;
                 boolean shouldIgnore = false;
                 for(String l : ignoreLayers){
                     if (go.getLayer().equals(l)) {
@@ -383,5 +389,13 @@ public class GameObject {
 
     public void setWorldIndex(int worldIndex) {
         this.worldIndex = worldIndex;
+    }
+
+    public boolean isRendered() {
+        return isRendered;
+    }
+
+    public void setRendered(boolean rendered) {
+        isRendered = rendered;
     }
 }

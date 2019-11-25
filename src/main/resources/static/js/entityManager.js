@@ -21,14 +21,33 @@ _removedIDs : [],
 _playerID : 0,
 _playerPos : {x : 0, y : 0},
 _stats : {health : 3, drink: 3},
+_background : null,
 
 // "PUBLIC" METHODS
 
 deferredSetup : function () {
+
 },
 
 
 render: function(ctx) {
+    if(this._background != null)
+        this._background.render(ctx);
+    else{
+        this._background = new GameObject({
+            id : -1,
+            targetX : 0,
+            targetY : 0,
+            sprite : 'background',
+            scaleX: 2,
+            scaleY: 2,
+            isStatic : true,
+            zIndex : -1,
+            tooltip: "",
+            isRendered: true
+        })
+    }
+
     //Map to temporary array
     let map = this._gameObjects.map(function (el, index) {
         return { index : index, value : el.zIndex };
@@ -67,6 +86,7 @@ updateGameState: function(response) {
         this._stats.drink = gameState.stats.drink;
     }
 
+
     gameState.gameObjects.forEach(go => {
         if(go.id === this._playerID){
             this._playerPos.x = go.x;
@@ -79,7 +99,8 @@ updateGameState: function(response) {
             this._gameObjects[foundIndex].scaleX = go.scaleX;
             this._gameObjects[foundIndex].scaleY = go.scaleY;
             this._gameObjects[foundIndex].zIndex = go.zIndex;
-            if(this._playerID == go.id)
+            this._gameObjects[foundIndex].isRendered = go.isRendered;
+            if(this._playerID === parseInt(go.id))
                 this._gameObjects[foundIndex].tooltip = go.tooltip;
         } else {
             let obj = new GameObject({
@@ -91,10 +112,16 @@ updateGameState: function(response) {
                 scaleY: go.scaleY,
                 isStatic : go.isStatic,
                 zIndex : go.zIndex,
-                tooltip: ""
+                tooltip: "",
+                isRendered: go.isRendered
             });
             this._gameObjects.push(obj);
         }
+    });
+
+    gameState.tempRemovedGameObjectIDs.forEach(ID => {
+        let index = this._gameObjects.findIndex(e => e.id === ID);
+        this._gameObjects.splice(index, 1);
     });
 
     gameState.removedGameObjectIDs.forEach(ID => {
@@ -104,6 +131,11 @@ updateGameState: function(response) {
             this._gameObjects.splice(index, 1);
         }
     });
+
+    if(this._background != null) {
+        this._background.targetX = -this.posShift.x;
+        this._background.targetY = -this.posShift.y;
+    }
 
     let xLerp = util.lerp(0,gameState.posShift.x - this.posShift.x, 0.03);
     let yLerp = util.lerp(0,gameState.posShift.y - this.posShift.y, 0.03);

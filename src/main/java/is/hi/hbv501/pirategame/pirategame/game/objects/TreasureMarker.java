@@ -20,6 +20,7 @@ public class TreasureMarker extends GameObject {
 
     public TreasureMarker(GameService gameService) {
         super(gameService);
+        setRendered(false);
         diveWorld = new World(gameService);
     }
 

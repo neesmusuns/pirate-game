@@ -82,6 +82,7 @@ public class GameController {
             //Package up the World and send to user
             JSONObject response = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
+            JSONArray tempRemovedGameObjectIDs = new JSONArray();
             World world = currentState.getWorld(0);
             putWorld(gameObjectsArray, world);
 
@@ -97,6 +98,7 @@ public class GameController {
 
             response.put("IsLoggedIn", "true");
             response.put("gameObjects", gameObjectsArray);
+            response.put("tempRemovedGameObjectIDs", tempRemovedGameObjectIDs);
             response.put("removedGameObjectIDs", new JSONArray());
             response.put("posShift", posShift);
             return response.toString();
@@ -114,22 +116,23 @@ public class GameController {
             JSONObject gameState = new JSONObject();
             JSONArray gameObjectsArray = new JSONArray();
             JSONArray removedGameObjectIDs = new JSONArray();
+            JSONArray tempRemovedGameObjectIDs = new JSONArray();
             currentState.getGameObjects().values().forEach(obj -> {
                 if(obj.getWorldIndex() == user.getWorldIndex())
                     putGameObject(gameObjectsArray, obj);
-                else
-                    removedGameObjectIDs.put(obj.getID());
+                else if (user.hasChangedWorld())
+                    tempRemovedGameObjectIDs.put(obj.getID());
             });
 
 
             currentState.getRemovedGameObjectIDs().forEach(removedGameObjectIDs::put);
 
             if(user.hasChangedWorld()) {
+                System.out.println("Switched world");
                 for(Tile[] tiles : currentState.getWorld(user.getPreviousWorldIndex()).getTiles()){
                     for (Tile tile : tiles) {
-                        removedGameObjectIDs.put(tile.getID());
+                        tempRemovedGameObjectIDs.put(tile.getID());
                     }
-
                 }
                 World world = currentState.getWorld(user.getWorldIndex());
                 putWorld(gameObjectsArray, world);
@@ -144,6 +147,7 @@ public class GameController {
 
             gameState.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
             gameState.put("stats", stats);
+            gameState.put("tempRemovedGameObjectIDs", tempRemovedGameObjectIDs);
             gameState.put("gameObjects", gameObjectsArray);
             gameState.put("removedGameObjectIDs", removedGameObjectIDs);
             gameState.put("posShift", posShift);
@@ -157,13 +161,16 @@ public class GameController {
     }
 
     private void putWorld(JSONArray gameObjectsArray, World world) {
+        int count = 0;
         Tile[][] tiles = world.getTiles();
         for (int i = 0; i < world.getWidth(); i++) {
             for (int j = 0; j < world.getHeight(); j++) {
+                count++;
                 GameObject obj = tiles[i][j];
                 putGameObject(gameObjectsArray, obj);
             }
         }
+        System.out.println("Sent " + count + " tiles");
     }
 
     private JSONObject getUserStats(String sessionID) throws JSONException {
@@ -189,6 +196,7 @@ public class GameController {
             gameObject.put("isStatic", obj.isStatic());
             gameObject.put("zIndex", obj.getZIndex());
             gameObject.put("tooltip", obj.getTooltip());
+            gameObject.put("isRendered", obj.isRendered());
 
             gameObjectsArray.put(gameObject);
         } catch (JSONException e) {

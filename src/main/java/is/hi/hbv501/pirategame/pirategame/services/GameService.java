@@ -38,6 +38,9 @@ public class GameService {
         worlds[1] = new World(this);
         worlds[1].generateWorld("divingworld.txt", 1);
 
+        TreasureMarker marker = (TreasureMarker) addGameObject(new TreasureMarker(this));
+        marker.setPosition(new Vector2(1520, 1320));
+
         gameState = new GameState(worlds, gameObjects);
         System.out.println("Finished generating world");
     }
@@ -58,18 +61,25 @@ public class GameService {
                 GameObject foundBoat = null;
                 boolean isNearShop = false;
                 Shop foundShop = null;
+                boolean isNearMarker = false;
+                TreasureMarker foundMarker;
+
 
                 /*
                  * CHECK OBJECTS IN PROXIMITY
                  */
                 if(!obj.isInBoat()) {
                     //If near boat
-                    for (GameObject o : getGameObjectsInRange(obj, 60)) {
+                    for (GameObject o : getGameObjectsInRange(obj, 60, u.getWorldIndex())) {
                         if (o instanceof Boat) {
                             isNearBoat = true;
                             foundBoat = o;
                             obj.setTooltip("Press 'E' to enter boat");
-                            break;
+                        }
+                        if(o instanceof TreasureMarker){
+                            isNearMarker = true;
+                            foundMarker = (TreasureMarker) o;
+                            obj.setTooltip("Press 'E' to enter dive");
                         }
                     }
 
@@ -89,31 +99,36 @@ public class GameService {
                  */
 
                 if(Input.GetKey("W", u.getKeyPresses())){
-                    moveDirY = obj.getMoveSpeed();
+                    moveDirY += obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("A", u.getKeyPresses())){
-                    moveDirX = -obj.getMoveSpeed();
+                    moveDirX += -obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("S", u.getKeyPresses())){
-                    moveDirY = -obj.getMoveSpeed();
+                    moveDirY += -obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("D", u.getKeyPresses())){
-                    moveDirX = obj.getMoveSpeed();
+                    moveDirX += obj.getMoveSpeed();
                 }
 
                 if(Input.GetKey("E", u.getKeyPresses())){
-                    u.setWorldIndex(1);
-                    obj.setWorldIndex(1);
-
                     if(isNearBoat){
                         obj.enterBoat(foundBoat);
                     } else if(isNearShop){
                         obj.enterShop(foundShop);
                         GameObject boat = addGameObject(new Boat(this));
                         boat.setPosition( new Vector2(1520, 1320));
+                    } else if(isNearMarker){
+                        obj.dive();
+                        u.setWorldIndex(1);
+                        obj.setWorldIndex(1);
+                        obj.setPosition(new Vector2(120, 20));
+                    } else if(obj.isDiving()){
+                        obj.exitDive();
+                        u.setWorldIndex(0);
                     }
                     //If in boat and press E
                     else {
@@ -126,11 +141,21 @@ public class GameService {
                     //fight player
                 }
 
+                /*
+                 * OUTPUT MOVEMENT
+                 */
+
+                if(obj.isDiving())
+                    moveDirY -= 1;
+
                 //Perform movement
-                if(!obj.isInBoat())
-                    obj.translate(moveDirX, - moveDirY);
+                if(!obj.isInBoat()) {
+                    obj.translate(moveDirX, 0);
+                    obj.translate(0, -moveDirY);
+                }
                 else {
-                    obj.getBoat().translate(moveDirX, -moveDirY);
+                    obj.getBoat().translate(0, -moveDirY);
+                    obj.getBoat().translate(moveDirX, 0);
                     obj.moveRelativeToBoat();
                 }
 
@@ -163,12 +188,14 @@ public class GameService {
         }
     }
 
-    public List<GameObject> getGameObjectsInRange(GameObject gameObject, int range){
+    public List<GameObject> getGameObjectsInRange(GameObject gameObject, int range, int worldIndex){
         double rangeSquared = range*range;
         ArrayList<GameObject> foundObjects = new ArrayList<>();
         for (GameObject go : getGameObjects().values()){
-            if(Vector2.DistanceSquared(go.getPosition(), gameObject.getPosition()) <= rangeSquared)
-                foundObjects.add(go);
+            if(go.getWorldIndex() == worldIndex) {
+                if (Vector2.DistanceSquared(go.getPosition(), gameObject.getPosition()) <= rangeSquared)
+                    foundObjects.add(go);
+            }
         }
 
         return foundObjects;

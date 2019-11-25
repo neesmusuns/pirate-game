@@ -28,7 +28,7 @@ function collectInput(){
     let keyPresses = "";
 
     keys.forEach(function (value, keyCode) {
-        if(keyCode == 69) {
+        if(keyCode == 69 || keyCode == 70) {
             if(eatKey(keyCode))
                 keyPresses += (String(keyCode)) + " ";
         }
@@ -72,7 +72,10 @@ function requestPreloads() {
         shop:'../images/shop.png',
         healthfull:'../images/healthfull.png',
         healthempty:'../images/healthempty.png',
-        pier:'../images/tiles/pier.png'
+        pier:'../images/tiles/pier.png',
+        underwater1: '../images/tiles/underwater1.png',
+        underwater2: '../images/tiles/underwater2.png',
+        background: '../images/tiles/background.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -94,6 +97,9 @@ function preloadDone() {
     g_sprites.healthfull = new Sprite(g_images.healthfull);
     g_sprites.healthempty = new Sprite(g_images.healthempty);
     g_sprites.pier = new Sprite(g_images.pier);
+    g_sprites.underwater1 = new Sprite(g_images.underwater1);
+    g_sprites.underwater2 = new Sprite(g_images.underwater2);
+    g_sprites.background = new Sprite(g_images.background);
 
     main.init();
 }

@@ -32,7 +32,7 @@ public class Pirate extends GameObject {
 
     private int damage; // damage inflicted in fight
 
-    private int worldIndex; // the current world, main or different diving worlds
+    private Vector2 overWorldPosition;
 
     public Pirate(GameService gameService) {
         super(gameService);
@@ -77,11 +77,18 @@ public class Pirate extends GameObject {
     }
 
     public void dive() {
+        boolean diveSuccessful = true;
 
+        if(diveSuccessful){
+            overWorldPosition = getPosition();
+            isDiving = true;
+        }
     }
 
     public void exitDive() {
-
+        isDiving = false;
+        setWorldIndex(0);
+        setPosition(overWorldPosition);
     }
 
     public Vector2[] getCollider(){
@@ -172,14 +179,6 @@ public class Pirate extends GameObject {
         this.damage = damage;
     }
 
-    public int getWorldIndex() {
-        return worldIndex;
-    }
-
-    public void setWorldIndex(int worldIndex) {
-        this.worldIndex = worldIndex;
-    }
-
     public void enterBoat(GameObject o) {
         setBoat(o);
         setInBoat(true);
@@ -210,5 +209,13 @@ public class Pirate extends GameObject {
                 setInBoat(false);
             }
         }
+    }
+
+    public Vector2 getOverWorldPosition() {
+        return overWorldPosition;
+    }
+
+    public void setOverWorldPosition(Vector2 overWorldPosition) {
+        this.overWorldPosition = overWorldPosition;
     }
 }

@@ -41,9 +41,11 @@ GameObject.prototype.render = function (ctx) {
         this.y = util.lerp(this.y, this.targetY, 0.1);
     }
 
-    this.sprite.drawCentredAt(
-	    ctx, this.x, this.y
-    );
+    if(this.isRendered) {
+        this.sprite.drawCentredAt(
+            ctx, this.x, this.y
+        );
+    }
 
     if(this.tooltip !== "") {
         ctx.font = "12px Arial";

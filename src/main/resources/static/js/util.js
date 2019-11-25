@@ -58,6 +58,12 @@ getSprite: function(name){
             return g_sprites.healthempty;
         case 'pier':
             return g_sprites.pier;
+        case 'underwater1':
+            return g_sprites.underwater1;
+        case 'underwater2':
+            return g_sprites.underwater2;
+        case 'background':
+            return g_sprites.background;
 
         default:
             break;

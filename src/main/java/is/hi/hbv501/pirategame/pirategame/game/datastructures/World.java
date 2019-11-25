@@ -111,6 +111,14 @@ public class World {
                         t.setSprite("pier");
                         t.setZIndex(1);
                         break;
+                    case "0":
+                        t.setLand(true);
+                        t.setSprite("underwater1");
+                        break;
+                    case "2":
+                        t.setLand(false);
+                        t.setSprite("underwater2");
+                        break;
                     default:
                         t.setLand(true);
                         t.setSprite("beach1");
