@@ -41,6 +41,7 @@ public class GameController {
     String CheckAdapter(HttpServletRequest request, HttpSession session) throws JSONException {
         boolean isLoggedIn = Boolean.parseBoolean(request.getParameter("IsLoggedIn"));
         boolean isQuitting = Boolean.parseBoolean(request.getParameter("IsQuitting"));
+        boolean hasExitedShop = Boolean.parseBoolean(request.getParameter("HasExited"));
         GameState currentState = gameService.getGameState();
 
         String sessionID = session.getId();
@@ -50,12 +51,22 @@ public class GameController {
          */
         if (isQuitting && isLoggedIn) {
             gameService.requestRemoveUser(sessionID);
-        }else if(isQuitting){
+        }else if(isQuitting) {
             //Do nothing
-            /*
-             * LOGGING IN
-             */
-        } else if (!isLoggedIn) {
+        }
+        /*
+         * EXITING SHOP
+         */
+        else if(hasExitedShop) {
+            User user = gameService.getUsers().get(sessionID);
+            Pirate p = ((Pirate) gameService.getGameObjects().get(user.getPlayerObjectID()));
+            p.exitShop();
+        }
+
+        /*
+         * LOGGING IN
+         */
+        else if (!isLoggedIn) {
             String username = request.getParameter("Username");
             String password = request.getParameter("Password");
 

@@ -83,7 +83,6 @@ public class Pirate extends GameObject {
     {
         isInShop = true;
         shop = s;
-        System.out.println("Bought a boat");
     }
 
     public void exitShop() {
