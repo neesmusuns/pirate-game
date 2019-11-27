@@ -62,6 +62,7 @@ function requestPreloads() {
 
     let requiredImages = {
         pirate: '../images/pirate0.png',
+        map: '../images/map.png',
         sea1: '../images/tiles/sea1.png',
         sea2: '../images/tiles/sea2.png',
         boat: '../images/boat0.png',

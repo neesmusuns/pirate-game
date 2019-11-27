@@ -36,6 +36,8 @@ getSprite: function(name){
     switch (name) {
         case 'pirate':
             return g_sprites.pirate;
+        case 'map':
+            return g_sprites.map;
         case 'sea1':
             return g_sprites.sea1;
         case 'sea2':

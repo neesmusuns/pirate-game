@@ -2,6 +2,7 @@ package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
 import is.hi.hbv501.pirategame.pirategame.PirategameApplication;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
+import is.hi.hbv501.pirategame.pirategame.game.objects.ShopItem;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import org.springframework.core.io.ClassPathResource;
@@ -97,6 +98,10 @@ public class World {
                         t.setLand(true);
                         t.setPassable(false);
                         t.setZIndex(1);
+                        Scanner shopSc = GetTextFileScanner("shopItems.txt");
+                        while(shopSc.hasNextLine()) {
+                            ((Shop)t).addShopItem(parseShopItem(shopSc.nextLine()));
+                        }
                         break;
                     case "p":
                         t.setLayer("land");
@@ -204,6 +209,14 @@ public class World {
         */
 
     }
+
+
+    private ShopItem parseShopItem(String line) {
+        String[] words = line.split(",");
+        ShopItem item = new ShopItem(words[0], Integer.parseInt(words[1]), words[2]);
+        return item;
+    }
+
 
     private Scanner GetTextFileScanner(String textFile){
         ClassPathResource resource = new ClassPathResource(textFile);

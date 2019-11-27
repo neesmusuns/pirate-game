@@ -1,0 +1,5 @@
+Black shirt,4,black_shirt
+Map,10,map
+Boat,40,boat
+Parrot,16,parrot
+Sword,8,sword1
