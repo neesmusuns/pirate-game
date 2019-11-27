@@ -4,10 +4,12 @@ import is.hi.hbv501.pirategame.pirategame.PirategameApplication;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -47,8 +49,14 @@ public class World {
      * Generates a world
      */
     public void generateWorld(String textFile, int worldIndex) {
-        System.out.println(PirategameApplication.class.getResource("/"+textFile).getPath());
-        File file = new File(Objects.requireNonNull(PirategameApplication.class.getResource("/"+textFile).getPath()));
+        ClassPathResource resource = new ClassPathResource(textFile);
+        File file = null;
+        try {
+            file = resource.getFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert file != null;
         FileReader fr = null;
         FileReader frCount = null;
         try {
