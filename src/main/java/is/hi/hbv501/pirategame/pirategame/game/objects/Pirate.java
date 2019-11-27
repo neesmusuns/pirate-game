@@ -134,6 +134,20 @@ public class Pirate extends GameObject {
         };
     }
 
+    public double getTreasureMarkerRot(){
+        double angle = 0;
+
+        Vector2 dir = Vector2.Sub(treasureMarker.getPosition(), getPosition());
+
+        angle = Math.atan((-dir.getY())/dir.getX())*180/Math.PI;
+
+        if(angle < 0){
+            angle = 360 + angle;
+        }
+
+        return angle;
+    }
+
 
     public double getHealth() {
         return health;
