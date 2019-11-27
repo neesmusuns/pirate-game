@@ -1,5 +1,6 @@
 package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
+import is.hi.hbv501.pirategame.pirategame.PirategameApplication;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
@@ -46,7 +47,8 @@ public class World {
      * Generates a world
      */
     public void generateWorld(String textFile, int worldIndex) {
-        File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(textFile)).getFile());
+        System.out.println(PirategameApplication.class.getResource("/"+textFile).getPath());
+        File file = new File(Objects.requireNonNull(PirategameApplication.class.getResource("/"+textFile).getPath()));
         FileReader fr = null;
         FileReader frCount = null;
         try {
