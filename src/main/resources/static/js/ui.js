@@ -53,3 +53,51 @@ function renderUI(health, drink, breath, hasTreasure){
         treasure.render(ctx)
     }
 }
+function renderShopUI(items) {
+    items.forEach(item=>{
+        let t = `<div class="item">
+                    <button class="btn-img" onclick="buy('${item.sprite}')">
+                        <img src="../images/${item.sprite}.png">
+                        ${item.name}: ${item.price}
+                    </button>
+                  </div>`;
+        $("#items").append(t);
+        }
+    );
+    let money = entityManager._stats.money;
+    $("#gameArea").append(`<button class="btn-rem" id="money">GOLD: ${money}</button>`);
+    $("#gameArea").append(`<button class="btn-rem" id="exit" type=\"submit\" onclick=\"exitShop()\">EXIT SHOP</button>`);
+    $("#gameArea").append(`<button class="btn-rem" id="sell" type=\"submit\" onclick=\"sell()\">SELL</button>`);
+}
+
+function clearShopUI(){
+    entityManager.isInShop = false;
+    entityManager.hasGeneratedShopUI = false;
+    $("#items").empty();
+    var elmnt = document.getElementById("money");
+    elmnt.remove();
+    elmnt = document.getElementById("exit");
+    elmnt.remove();
+    elmnt = document.getElementById("sell");
+    elmnt.remove();
+}
+
+function exitShop(){
+    let exitObject = {HasExited: true};
+    let request = function () {
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "",
+            data: exitObject, // parameters
+            success:
+                function (response) {
+
+                },
+            error: function () {
+                console.log("failed to send request");
+            }
+        });
+    };
+    request();
+}

@@ -20,10 +20,11 @@ posShift : {x : 0, y : 0},
 _removedIDs : [],
 _playerID : 0,
 _playerPos : {x : 0, y : 0},
-_stats : {health : 3, drink: 3, breath : 10, hasTreasure : false},
+_stats : {health : 3, drink: 3, breath : 10, hasTreasure : false, money: 0},
 _background : null,
 changedWorld : true,
 isInShop : false,
+hasGeneratedShopUI: false,
 
 // "PUBLIC" METHODS
 
@@ -81,8 +82,14 @@ updateGameState: function(response) {
 
     if(gameState.shopItems != null){
         this.isInShop = true;
+        if(!this.hasGeneratedShopUI){
+            renderShopUI(gameState.shopItems);
+            this.hasGeneratedShopUI = true;
+        }
+        $("#money").html("GOLD: " + this._stats.money);
     } else{
-        this.isInShop = false;
+        if(this.hasGeneratedShopUI)
+            clearShopUI();
     }
 
     if(gameState.playerID != null){
@@ -94,6 +101,7 @@ updateGameState: function(response) {
         this._stats.drink = gameState.stats.drink;
         this._stats.breath = gameState.stats.breath;
         this._stats.hasTreasure = gameState.stats.hasTreasure;
+        this._stats.money = gameState.stats.money;
     }
 
 

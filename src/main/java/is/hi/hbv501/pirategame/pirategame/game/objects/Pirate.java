@@ -62,6 +62,7 @@ public class Pirate extends GameObject {
         super.Start();
         setHasCollider(true);
         addIgnoreLayer("land");
+        hasTreasure = true;
     }
 
     public void Update(){
@@ -137,12 +138,14 @@ public class Pirate extends GameObject {
     public double getTreasureMarkerRot(){
         double angle = 0;
 
-        Vector2 dir = Vector2.Sub(treasureMarker.getPosition(), getPosition());
+        if(hasMap) {
+            Vector2 dir = Vector2.Sub(treasureMarker.getPosition(), getPosition());
 
-        angle = Math.atan((-dir.getY())/dir.getX())*180/Math.PI;
+            angle = Math.atan((-dir.getY()) / dir.getX()) * 180 / Math.PI;
 
-        if(angle < 0){
-            angle = 360 + angle;
+            if (angle < 0) {
+                angle = 360 + angle;
+            }
         }
 
         return angle;

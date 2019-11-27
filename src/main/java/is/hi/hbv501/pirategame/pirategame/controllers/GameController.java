@@ -72,8 +72,9 @@ public class GameController {
             if(user.getMoney() >= ItemPrices.prices.get(boughtItem)){
                 user.setMoney(user.getMoney() - ItemPrices.prices.get(boughtItem));
             }
-
+            System.out.println("Attempted buying " + boughtItem);
             if(boughtItem.contains("boat")){
+                System.out.println("Successfully buying " + boughtItem);
                 gameService.addBoat();
             } else if(boughtItem.contains("map")){
                 gameService.generateTreasureMarker(user);
@@ -267,7 +268,7 @@ public class GameController {
             shopItem.put("price", item.getPrice());
             shopItem.put("sprite", item.getSprite());
 
-            shopItemsArray.put(item);
+            shopItemsArray.put(shopItem);
         } catch (JSONException e) {
             e.printStackTrace();
         }
