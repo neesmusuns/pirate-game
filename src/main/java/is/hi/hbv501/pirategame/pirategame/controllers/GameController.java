@@ -76,6 +76,8 @@ public class GameController {
                 gameService.addBoat();
             } else if(boughtItem.contains("map")){
                 gameService.generateTreasureMarker(user);
+            } else if(boughtItem.contains("bottle")){
+                user.setDrinks(user.getDrinks() + 1);
             }
         }
         /*
