@@ -44,6 +44,7 @@ public class GameController {
         boolean isQuitting = Boolean.parseBoolean(request.getParameter("IsQuitting"));
         boolean hasExitedShop = Boolean.parseBoolean(request.getParameter("HasExited"));
         boolean isBuying = Boolean.parseBoolean(request.getParameter("IsBuying"));
+        boolean isSelling = Boolean.parseBoolean(request.getParameter("IsSelling"));
 
         GameState currentState = gameService.getGameState();
 
@@ -56,6 +57,13 @@ public class GameController {
             gameService.requestRemoveUser(sessionID);
         }else if(isQuitting) {
             //Do nothing
+        } else if(isSelling){
+            User user = gameService.getUsers().get(sessionID);
+            Pirate p = ((Pirate) gameService.getGameObjects().get(user.getPlayerObjectID()));
+            if(p.hasTreasure()){
+                user.setMoney(user.getMoney() + 20);
+                p.setHasTreasure(false);
+            }
         } else if(isBuying){
             String boughtItem = request.getParameter("Item");
             User user = gameService.getUsers().get(sessionID);
@@ -192,6 +200,7 @@ public class GameController {
             gameState.put("posShift", posShift);
 
 
+
             return gameState.toString();
         }
 
@@ -221,6 +230,9 @@ public class GameController {
         stats.put("drink", player.getDrinks());
         stats.put("breath", player.getBreath());
         stats.put("hasTreasure", player.hasTreasure());
+        stats.put("money", user.getMoney());
+        stats.put("hasMap", player.hasMap());
+        stats.put("markerRotation", player.getTreasureMarkerRot());
 
         return stats;
     }

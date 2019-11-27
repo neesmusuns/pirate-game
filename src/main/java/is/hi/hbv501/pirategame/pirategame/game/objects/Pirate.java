@@ -305,7 +305,7 @@ public class Pirate extends GameObject {
         return shop;
     }
 
-    public boolean isHasMap() {
+    public boolean hasMap() {
         return hasMap;
     }
 
