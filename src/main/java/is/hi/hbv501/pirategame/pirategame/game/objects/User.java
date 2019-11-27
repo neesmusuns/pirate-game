@@ -28,7 +28,7 @@ public class User {
      */
     private long PlayerObjectID;
 
-    private int money;
+    private int money = 50;
     private int headwear;
     private int shirt;
     private int pants;

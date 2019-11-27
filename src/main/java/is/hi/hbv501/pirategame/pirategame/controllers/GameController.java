@@ -1,6 +1,7 @@
 package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
+import is.hi.hbv501.pirategame.pirategame.game.ItemPrices;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
@@ -42,6 +43,8 @@ public class GameController {
         boolean isLoggedIn = Boolean.parseBoolean(request.getParameter("IsLoggedIn"));
         boolean isQuitting = Boolean.parseBoolean(request.getParameter("IsQuitting"));
         boolean hasExitedShop = Boolean.parseBoolean(request.getParameter("HasExited"));
+        boolean isBuying = Boolean.parseBoolean(request.getParameter("IsBuying"));
+
         GameState currentState = gameService.getGameState();
 
         String sessionID = session.getId();
@@ -53,6 +56,19 @@ public class GameController {
             gameService.requestRemoveUser(sessionID);
         }else if(isQuitting) {
             //Do nothing
+        } else if(isBuying){
+            String boughtItem = request.getParameter("Item");
+            User user = gameService.getUsers().get(sessionID);
+
+            if(user.getMoney() >= ItemPrices.prices.get(boughtItem)){
+                user.setMoney(user.getMoney() - ItemPrices.prices.get(boughtItem));
+            }
+
+            if(boughtItem.contains("boat")){
+                gameService.addBoat();
+            } else if(boughtItem.contains("map")){
+                gameService.generateTreasureMarker(user);
+            }
         }
         /*
          * EXITING SHOP

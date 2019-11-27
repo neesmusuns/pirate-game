@@ -44,9 +44,6 @@ public class GameService {
             freeWorlds.push(i);
         }
 
-        TreasureMarker marker = (TreasureMarker) addGameObject(new TreasureMarker(this));
-        marker.setPosition(new Vector2(1520, 1320));
-
         gameState = new GameState(worlds, gameObjects);
         System.out.println("Finished generating world");
     }
@@ -96,7 +93,8 @@ public class GameService {
                     //If near shop
                     for(GameObject tile : obj.GetTilesInRange(1)){
                         if(tile instanceof Shop) {
-                            obj.setTooltip("Press 'E' to enter shop");
+                            if(!obj.isInShop())
+                                obj.setTooltip("Press 'E' to enter shop");
                             isNearShop = true;
                             foundShop = (Shop) tile;
                             break;
@@ -129,8 +127,6 @@ public class GameService {
                         obj.enterBoat(foundBoat);
                     } else if(isNearShop){
                         obj.enterShop(foundShop);
-                        GameObject boat = addGameObject(new Boat(this));
-                        boat.setPosition( new Vector2(1520, 1320));
                     } else if(isNearMarker){
                         removeGameObject(foundMarker.getID());
                         obj.dive();
@@ -138,10 +134,6 @@ public class GameService {
                         u.setWorldIndex(diveWorldIndex);
                         obj.setWorldIndex(diveWorldIndex);
                         obj.setPosition(new Vector2(480, 0));
-                    } else if(obj.isDiving()){
-                        freeWorlds.push(obj.getWorldIndex());
-                        obj.exitDive();
-                        u.setWorldIndex(0);
                     }
                     //If in boat and press E
                     else {
@@ -179,7 +171,7 @@ public class GameService {
                             moveDirY -= 1;
                         }
                     } else {
-                        obj.setBreath(obj.getBreath() - deltaTime*0.2   );
+                        obj.setBreath(obj.getBreath() - deltaTime*0.2);
                     }
 
                     if(obj.getBreath() <= 0){
@@ -291,6 +283,28 @@ public class GameService {
         removeGameObject(removedUser.getPlayerObjectID());
     }
 
+    public void generateTreasureMarker(User u){
+        Pirate p = (Pirate) gameObjects.get(u.getPlayerObjectID());
+        boolean hasFoundSuitableTile = false;
+        int x = 0;
+        int y = 0;
+        while(!hasFoundSuitableTile){
+            x = (int) (Math.random() * (worlds[0].getWidth() - 1));
+            y = (int) (Math.random() * (worlds[0].getHeight() - 1));
+
+            if(!worlds[0].getTiles()[x][y].isLand()){
+                hasFoundSuitableTile = true;
+            }
+        }
+
+        TreasureMarker t = new TreasureMarker(this);
+        t.setPosition(new Vector2(x*40, y*40));
+
+        p.setTreasureMarker(t);
+        p.setHasMap(true);
+
+    }
+
     private GameObject addGameObject(GameObject go){
         go.setService(this);
         gameObjects.put(go.getID(), go);
@@ -344,5 +358,10 @@ public class GameService {
 
     public Vector2 getDefaultScale() {
         return defaultScale;
+    }
+
+    public void addBoat() {
+        GameObject boat = addGameObject(new Boat(this));
+        boat.setPosition( new Vector2(1520, 1320));
     }
 }

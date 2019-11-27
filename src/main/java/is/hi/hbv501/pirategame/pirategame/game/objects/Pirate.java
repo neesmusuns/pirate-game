@@ -40,11 +40,17 @@ public class Pirate extends GameObject {
 
     private boolean hasTreasure;
 
+    private boolean hasMap;
+
+    TreasureMarker treasureMarker;
+
     private Vector2 overWorldPosition;
 
     private double breath = 10;
 
     private int maxBreath = 10;
+
+
 
     public Pirate(GameService gameService) {
         super(gameService);
@@ -94,6 +100,9 @@ public class Pirate extends GameObject {
         boolean diveSuccessful = true;
 
         if(diveSuccessful){
+            if(isInBoat){
+                isInBoat = false;
+            }
             overWorldPosition = getPosition();
             isDiving = true;
         }
@@ -101,6 +110,8 @@ public class Pirate extends GameObject {
 
     public void exitDive() {
         isDiving = false;
+        if(boat != null)
+            isInBoat = true;
         setBreath(10);
         setWorldIndex(0);
         setPosition(overWorldPosition);
@@ -278,5 +289,21 @@ public class Pirate extends GameObject {
 
     public Shop getShop() {
         return shop;
+    }
+
+    public boolean isHasMap() {
+        return hasMap;
+    }
+
+    public void setHasMap(boolean hasMap) {
+        this.hasMap = hasMap;
+    }
+
+    public TreasureMarker getTreasureMarker() {
+        return treasureMarker;
+    }
+
+    public void setTreasureMarker(TreasureMarker treasureMarker) {
+        this.treasureMarker = treasureMarker;
     }
 }

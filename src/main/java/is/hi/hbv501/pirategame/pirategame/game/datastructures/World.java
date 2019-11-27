@@ -1,6 +1,7 @@
 package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
 import is.hi.hbv501.pirategame.pirategame.PirategameApplication;
+import is.hi.hbv501.pirategame.pirategame.game.ItemPrices;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.ShopItem;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
@@ -214,6 +215,7 @@ public class World {
     private ShopItem parseShopItem(String line) {
         String[] words = line.split(",");
         ShopItem item = new ShopItem(words[0], Integer.parseInt(words[1]), words[2]);
+        ItemPrices.prices.putIfAbsent(words[2], Integer.parseInt(words[1]));
         return item;
     }
 
