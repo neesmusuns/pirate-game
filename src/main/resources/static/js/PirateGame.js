@@ -81,7 +81,8 @@ function requestPreloads() {
         treasure: '../images/treasure.png',
         bubble: '../images/bubble.png',
         bottleempty: '../images/bottleempty.png',
-        bottlefull: '../images/bottlefull.png'
+        bottlefull: '../images/bottlefull.png',
+        marker: '../images/marker.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -110,6 +111,7 @@ function preloadDone() {
     g_sprites.bubble = new Sprite(g_images.bubble);
     g_sprites.bottleempty = new Sprite(g_images.bottleempty);
     g_sprites.bottlefull = new Sprite(g_images.bottlefull);
+    g_sprites.marker = new Sprite(g_images.marker);
 
     main.init();
 }

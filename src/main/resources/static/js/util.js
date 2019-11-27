@@ -74,6 +74,8 @@ getSprite: function(name){
             return g_sprites.treasure;
         case 'bubble':
             return g_sprites.bubble;
+        case 'marker':
+            return g_sprites.marker;
 
         default:
             break;
