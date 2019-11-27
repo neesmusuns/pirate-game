@@ -58,7 +58,7 @@ function renderShopUI(items) {
         let t = `<div class="item">
                     <button class="btn-img" onclick="buy('${item.sprite}')">
                         <img src="../images/${item.sprite}.png">
-                        ${item.name}: ${item.price}
+                        <p> ${item.name}: ${item.price} </p>
                     </button>
                   </div>`;
         $("#items").append(t);

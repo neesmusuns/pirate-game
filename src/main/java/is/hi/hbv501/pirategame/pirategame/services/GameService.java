@@ -75,32 +75,35 @@ public class GameService {
                 /*
                  * CHECK OBJECTS IN PROXIMITY
                  */
-                if(!obj.isInBoat()) {
-                    //If near boat
-                    for (GameObject o : getGameObjectsInRange(obj, 60, u.getWorldIndex())) {
+
+                //If near boat
+                for (GameObject o : getGameObjectsInRange(obj, 60, u.getWorldIndex())) {
+                    if(!obj.isInBoat()) {
                         if (o instanceof Boat) {
                             isNearBoat = true;
                             foundBoat = o;
                             obj.setTooltip("Press 'E' to enter boat");
                         }
-                        if(o instanceof TreasureMarker){
-                            isNearMarker = true;
-                            foundMarker = (TreasureMarker) o;
-                            obj.setTooltip("Press 'E' to enter dive");
-                        }
                     }
 
-                    //If near shop
-                    for(GameObject tile : obj.GetTilesInRange(1)){
-                        if(tile instanceof Shop) {
-                            if(!obj.isInShop())
-                                obj.setTooltip("Press 'E' to enter shop");
-                            isNearShop = true;
-                            foundShop = (Shop) tile;
-                            break;
-                        }
+                    if(o instanceof TreasureMarker){
+                        isNearMarker = true;
+                        foundMarker = (TreasureMarker) o;
+                        obj.setTooltip("Press 'E' to enter dive");
                     }
                 }
+
+                //If near shop
+                for(GameObject tile : obj.GetTilesInRange(1)){
+                    if(tile instanceof Shop) {
+                        if(!obj.isInShop())
+                            obj.setTooltip("Press 'E' to enter shop");
+                        isNearShop = true;
+                        foundShop = (Shop) tile;
+                        break;
+                    }
+                }
+
 
                 /*
                  * CHECK INPUT
@@ -198,6 +201,8 @@ public class GameService {
                     obj.getBoat().translate(moveDirX, 0);
                     obj.moveRelativeToBoat();
                 }
+
+                System.out.println(obj.getTreasureMarkerRot());
 
                 //Check delta position since last iteration
                 u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));
@@ -297,10 +302,10 @@ public class GameService {
             }
         }
 
-        TreasureMarker t = new TreasureMarker(this);
+        GameObject t = addGameObject(new TreasureMarker(this));
         t.setPosition(new Vector2(x*40, y*40));
 
-        p.setTreasureMarker(t);
+        p.setTreasureMarker((TreasureMarker) t);
         p.setHasMap(true);
 
     }
