@@ -67,6 +67,7 @@ public class GameController {
         } else if(isBuying){
             String boughtItem = request.getParameter("Item");
             User user = gameService.getUsers().get(sessionID);
+            Pirate p = ((Pirate) gameService.getGameObjects().get(user.getPlayerObjectID()));
 
             if(user.getMoney() >= ItemPrices.prices.get(boughtItem)){
                 user.setMoney(user.getMoney() - ItemPrices.prices.get(boughtItem));
@@ -77,7 +78,7 @@ public class GameController {
             } else if(boughtItem.contains("map")){
                 gameService.generateTreasureMarker(user);
             } else if(boughtItem.contains("bottle")){
-                user.setDrinks(user.getDrinks() + 1);
+                p.setDrinks(p.getDrinks() + 1);
             }
         }
         /*

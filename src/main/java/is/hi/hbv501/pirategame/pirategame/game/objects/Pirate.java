@@ -301,6 +301,10 @@ public class Pirate extends GameObject {
         return drinks;
     }
 
+    public void setDrinks(int drinks) {
+        this.drinks = drinks;
+    }
+
     public Shop getShop() {
         return shop;
     }
