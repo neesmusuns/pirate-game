@@ -10,4 +10,16 @@ public class ShopItem {
         price = p;
         sprite = s;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getSprite() {
+        return sprite;
+    }
 }

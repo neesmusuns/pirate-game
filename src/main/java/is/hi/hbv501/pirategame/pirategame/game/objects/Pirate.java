@@ -24,6 +24,8 @@ public class Pirate extends GameObject {
 
     private GameObject boat;
 
+    private Shop shop;
+
     private boolean isInBoat; // whether or not in boat
 
     private boolean isDiving; // whether or not in the diving mode
@@ -67,7 +69,6 @@ public class Pirate extends GameObject {
     public void moveRelativeToBoat(){
         if(isInBoat)
             setPosition(new Vector2(boat.getPosition().getX(), boat.getPosition().getY() - 20));
-
     }
 
     public void attack() {
@@ -78,12 +79,16 @@ public class Pirate extends GameObject {
 
     }
 
-    public void enterShop(Shop s) {
+    public void enterShop(Shop s)
+    {
+        isInShop = true;
+        shop = s;
         System.out.println("Bought a boat");
     }
 
     public void exitShop() {
-
+        isInShop = false;
+        shop = null;
     }
 
     public void dive() {
@@ -270,5 +275,9 @@ public class Pirate extends GameObject {
 
     public int getDrinks() {
         return drinks;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 }

@@ -23,6 +23,7 @@ _playerPos : {x : 0, y : 0},
 _stats : {health : 3, drink: 3, breath : 10, hasTreasure : false},
 _background : null,
 changedWorld : true,
+isInShop : false,
 
 // "PUBLIC" METHODS
 
@@ -77,6 +78,12 @@ updateGameState: function(response) {
         return;
 
     let gameState = JSON.parse(response);
+
+    if(gameState.shopItems != null){
+        this.isInShop = true;
+    } else{
+        this.isInShop = false;
+    }
 
     if(gameState.playerID != null){
         this._playerID = gameState.playerID

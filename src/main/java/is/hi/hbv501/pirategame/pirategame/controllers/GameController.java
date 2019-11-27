@@ -4,6 +4,7 @@ import is.hi.hbv501.pirategame.pirategame.game.GameObject;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
+import is.hi.hbv501.pirategame.pirategame.game.objects.ShopItem;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
@@ -51,9 +52,9 @@ public class GameController {
             gameService.requestRemoveUser(sessionID);
         }else if(isQuitting){
             //Do nothing
-        /*
-         * LOGGING IN
-         */
+            /*
+             * LOGGING IN
+             */
         } else if (!isLoggedIn) {
             String username = request.getParameter("Username");
             String password = request.getParameter("Password");
@@ -147,6 +148,14 @@ public class GameController {
             posShift.put("x", gameService.getUsers().get(sessionID).getDeltaMovement().getX());
             posShift.put("y", gameService.getUsers().get(sessionID).getDeltaMovement().getY());
 
+            Pirate p = ((Pirate) gameService.getGameObjects().get(user.getPlayerObjectID()));
+            if(p.isInShop()){
+                JSONArray shopItemsArray = new JSONArray();
+                p.getShop().getShopItems().forEach(item -> putShopItem(shopItemsArray, item));
+                gameState.put("shopItems", shopItemsArray);
+            }
+
+
             gameState.put("changedWorld", changedWorld);
             gameState.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
             gameState.put("stats", stats);
@@ -204,6 +213,19 @@ public class GameController {
             gameObject.put("isRendered", obj.isRendered());
 
             gameObjectsArray.put(gameObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void putShopItem(JSONArray shopItemsArray, ShopItem item) {
+        try {
+            JSONObject shopItem = new JSONObject();
+            shopItem.put("name", item.getName());
+            shopItem.put("price", item.getPrice());
+            shopItem.put("sprite", item.getSprite());
+
+            shopItemsArray.put(item);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -27,14 +27,15 @@ g_ctx.scale(0.25, 0.25);
 function collectInput(){
     let keyPresses = "";
 
-    keys.forEach(function (value, keyCode) {
-        if(keyCode == 69 || keyCode == 70) {
-            if(eatKey(keyCode))
+    if(!entityManager.isInShop) {
+        keys.forEach(function (value, keyCode) {
+            if (keyCode == 69 || keyCode == 70) {
+                if (eatKey(keyCode))
+                    keyPresses += (String(keyCode)) + " ";
+            } else if (value)
                 keyPresses += (String(keyCode)) + " ";
-        }
-        else if(value)
-            keyPresses += (String(keyCode)) + " ";
-    });
+        });
+    }
 
     return keyPresses;
 }

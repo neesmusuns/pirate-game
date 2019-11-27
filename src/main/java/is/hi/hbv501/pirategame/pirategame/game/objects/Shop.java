@@ -9,6 +9,9 @@ public class Shop extends Tile {
 
     private List<ShopItem> shopItems = new ArrayList<ShopItem>();
 
+    public List<ShopItem> getShopItems() {
+        return shopItems;
+    }
 
     public void addShopItem(ShopItem item) {
         shopItems.add(item);
