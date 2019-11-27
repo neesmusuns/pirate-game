@@ -112,7 +112,7 @@ public class Pirate extends GameObject {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 

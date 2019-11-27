@@ -77,7 +77,9 @@ function requestPreloads() {
         underwater2: '../images/tiles/underwater2.png',
         background: '../images/tiles/background.png',
         treasure: '../images/treasure.png',
-        bubble: '../images/bubble.png'
+        bubble: '../images/bubble.png',
+        bottleempty: '../images/bottleempty.png',
+        bottlefull: '../images/bottlefull.png'
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -104,6 +106,8 @@ function preloadDone() {
     g_sprites.background = new Sprite(g_images.background);
     g_sprites.treasure = new Sprite(g_images.treasure);
     g_sprites.bubble = new Sprite(g_images.bubble);
+    g_sprites.bottleempty = new Sprite(g_images.bottleempty);
+    g_sprites.bottlefull = new Sprite(g_images.bottlefull);
 
     main.init();
 }

@@ -49,25 +49,9 @@ public class World {
      * Generates a world
      */
     public void generateWorld(String textFile, int worldIndex) {
-        ClassPathResource resource = new ClassPathResource(textFile);
-        File file = null;
-        try {
-            file = resource.getFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assert file != null;
-        FileReader fr = null;
-        FileReader frCount = null;
-        try {
-            fr = new FileReader(file);
-            frCount = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        assert fr != null;
-        Scanner sc = new Scanner(fr);
-        Scanner counterSc = new Scanner(frCount);
+
+        Scanner sc = GetTextFileScanner(textFile);
+        Scanner counterSc = GetTextFileScanner(textFile);
 
         int len = 0;
         while (counterSc.hasNextLine()) {
@@ -219,6 +203,28 @@ public class World {
         tiles[36][18].setZIndex(1);
         */
 
+    }
+
+    private Scanner GetTextFileScanner(String textFile){
+        ClassPathResource resource = new ClassPathResource(textFile);
+        File file = null;
+        try {
+            file = resource.getFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert file != null;
+        FileReader fr = null;
+        FileReader frCount = null;
+        try {
+            fr = new FileReader(file);
+            frCount = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert fr != null;
+
+        return new Scanner(fr);
     }
 
     public Tile[][] getTiles() {

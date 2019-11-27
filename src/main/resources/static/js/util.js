@@ -56,6 +56,10 @@ getSprite: function(name){
             return g_sprites.healthfull;
         case 'healthempty':
             return g_sprites.healthempty;
+        case 'bottlefull':
+            return g_sprites.bottlefull;
+        case 'bottleempty':
+            return g_sprites.bottleempty;
         case 'pier':
             return g_sprites.pier;
         case 'underwater1':

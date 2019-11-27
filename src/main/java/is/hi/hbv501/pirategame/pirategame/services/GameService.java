@@ -185,10 +185,13 @@ public class GameService {
 
                     if(obj.getBreath() <= 0){
                         //TODO: KILL!!!!
-                        obj.setHoldingTreasure(false);
-                        freeWorlds.push(obj.getWorldIndex());
-                        obj.exitDive();
-                        u.setWorldIndex(0);
+                        obj.setHealth(obj.getHealth() - deltaTime*0.5);
+                        if(obj.getHealth() <= 0) {
+                            obj.setHoldingTreasure(false);
+                            freeWorlds.push(obj.getWorldIndex());
+                            obj.exitDive();
+                            u.setWorldIndex(0);
+                        }
                     }
                 }
 
