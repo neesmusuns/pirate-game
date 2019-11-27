@@ -150,8 +150,7 @@ public class GameService {
                 }
 
                 if(Input.GetKey("F", u.getKeyPresses())){
-                    //if another player near
-                    //fight player
+                    obj.drink();
                 }
 
                 /*
@@ -180,7 +179,7 @@ public class GameService {
                             moveDirY -= 1;
                         }
                     } else {
-                        obj.setBreath(obj.getBreath() - deltaTime*0.1);
+                        obj.setBreath(obj.getBreath() - deltaTime*0.2   );
                     }
 
                     if(obj.getBreath() <= 0){

@@ -215,10 +215,8 @@ public class World {
         }
         assert file != null;
         FileReader fr = null;
-        FileReader frCount = null;
         try {
             fr = new FileReader(file);
-            frCount = new FileReader(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

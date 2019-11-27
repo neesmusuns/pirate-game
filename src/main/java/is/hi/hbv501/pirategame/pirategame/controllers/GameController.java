@@ -182,7 +182,7 @@ public class GameController {
         Pirate player = (Pirate) gameService.getGameObjects().get(user.getPlayerObjectID());
 
         stats.put("health", player.getHealth());
-        stats.put("drink", user.getDrinks());
+        stats.put("drink", player.getDrinks());
         stats.put("breath", player.getBreath());
         stats.put("hasTreasure", player.hasTreasure());
 

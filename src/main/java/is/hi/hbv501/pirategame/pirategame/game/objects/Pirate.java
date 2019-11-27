@@ -10,9 +10,11 @@ import java.util.Map;
 
 public class Pirate extends GameObject {
 
-    private double health = 3; // pirate's health
+    private double health = 2; // pirate's health
 
     private int drunkedness; // pirate's drunkedness level
+
+    private int drinks = 1;
 
     private int hat; // hat/parrot accessories
 
@@ -98,6 +100,16 @@ public class Pirate extends GameObject {
         setBreath(10);
         setWorldIndex(0);
         setPosition(overWorldPosition);
+    }
+
+    /**
+     * Consumes one drink and restores one heart
+     */
+    public void drink() {
+        if(drinks > 0){
+            drinks--;
+            health = Math.ceil(health+0.01);
+        }
     }
 
     public Vector2[] getCollider(){
@@ -254,5 +266,9 @@ public class Pirate extends GameObject {
 
     public void setHoldingTreasure(boolean holdingTreasure) {
         isHoldingTreasure = holdingTreasure;
+    }
+
+    public int getDrinks() {
+        return drinks;
     }
 }
