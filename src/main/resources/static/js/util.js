@@ -64,6 +64,10 @@ getSprite: function(name){
             return g_sprites.underwater2;
         case 'background':
             return g_sprites.background;
+        case 'treasure':
+            return g_sprites.treasure;
+        case 'bubble':
+            return g_sprites.bubble;
 
         default:
             break;

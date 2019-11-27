@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Pirate extends GameObject {
 
-    private int health = 2; // pirate's health
+    private double health = 3; // pirate's health
 
     private int drunkedness; // pirate's drunkedness level
 
@@ -32,7 +32,15 @@ public class Pirate extends GameObject {
 
     private int damage; // damage inflicted in fight
 
+    private boolean isHoldingTreasure;
+
+    private boolean hasTreasure;
+
     private Vector2 overWorldPosition;
+
+    private double breath = 10;
+
+    private int maxBreath = 10;
 
     public Pirate(GameService gameService) {
         super(gameService);
@@ -87,6 +95,7 @@ public class Pirate extends GameObject {
 
     public void exitDive() {
         isDiving = false;
+        setBreath(10);
         setWorldIndex(0);
         setPosition(overWorldPosition);
     }
@@ -99,7 +108,7 @@ public class Pirate extends GameObject {
     }
 
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
@@ -217,5 +226,33 @@ public class Pirate extends GameObject {
 
     public void setOverWorldPosition(Vector2 overWorldPosition) {
         this.overWorldPosition = overWorldPosition;
+    }
+
+    public boolean hasTreasure() {
+        return hasTreasure;
+    }
+
+    public void setHasTreasure(boolean hasTreasure) {
+        this.hasTreasure = hasTreasure;
+    }
+
+    public double getBreath() {
+        return breath;
+    }
+
+    public void setBreath(double breath) {
+        this.breath = breath;
+    }
+
+    public int getMaxBreath() {
+        return maxBreath;
+    }
+
+    public boolean isHoldingTreasure() {
+        return isHoldingTreasure;
+    }
+
+    public void setHoldingTreasure(boolean holdingTreasure) {
+        isHoldingTreasure = holdingTreasure;
     }
 }

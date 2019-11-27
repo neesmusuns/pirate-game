@@ -46,7 +46,6 @@ public class World {
      * Generates a world
      */
     public void generateWorld(String textFile, int worldIndex) {
-
         File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(textFile)).getFile());
         FileReader fr = null;
         FileReader frCount = null;

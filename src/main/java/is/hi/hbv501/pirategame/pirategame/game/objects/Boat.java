@@ -11,6 +11,7 @@ public class Boat extends GameObject {
         super(gameService);
         super.setSprite("boat");
         setHasCollider(true);
+        setZIndex(1);
         addIgnoreLayer("water");
     }
 

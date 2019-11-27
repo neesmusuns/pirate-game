@@ -15,12 +15,15 @@ import java.util.*;
 @Service
 public class GameService {
     private Map<Long, GameObject> gameObjects = new HashMap<>();
-    int playerLimit = 10;
-    private World[] worlds = new World[10];
+    private int playerLimit = 10;
+    private Stack<Integer> freeWorlds = new Stack<>();
+    private World[] worlds = new World[playerLimit];
+
     private Map<String, User> users = new HashMap<>();
     private Queue<Pair<String, User>> userQueue = new LinkedList<>();
     private Queue<String> removedUserQueue = new LinkedList<>();
     private Vector2 defaultScale = new Vector2(2, 2);
+    long last_time = System.nanoTime();
 
     private GameState gameState;
 
@@ -35,8 +38,11 @@ public class GameService {
     private void Start(){
         worlds[0] = new World(this);
         worlds[0].generateWorld("world.txt", 0);
-        worlds[1] = new World(this);
-        worlds[1].generateWorld("divingworld.txt", 1);
+
+        //Set free world values to be 1, 2, 3, ..., playerLimit -1
+        for(int i = 1; i < playerLimit; i++){
+            freeWorlds.push(i);
+        }
 
         TreasureMarker marker = (TreasureMarker) addGameObject(new TreasureMarker(this));
         marker.setPosition(new Vector2(1520, 1320));
@@ -47,6 +53,10 @@ public class GameService {
 
     private void Update(){
         while(true) {
+            long time = System.nanoTime();
+            double deltaTime = ((time - last_time) / 1000000000d);
+
+
             for (GameObject go : gameObjects.values()) {
                 go.Update();
             }
@@ -62,7 +72,7 @@ public class GameService {
                 boolean isNearShop = false;
                 Shop foundShop = null;
                 boolean isNearMarker = false;
-                TreasureMarker foundMarker;
+                TreasureMarker foundMarker = null;
 
 
                 /*
@@ -122,11 +132,14 @@ public class GameService {
                         GameObject boat = addGameObject(new Boat(this));
                         boat.setPosition( new Vector2(1520, 1320));
                     } else if(isNearMarker){
+                        removeGameObject(foundMarker.getID());
                         obj.dive();
-                        u.setWorldIndex(1);
-                        obj.setWorldIndex(1);
-                        obj.setPosition(new Vector2(120, 20));
+                        int diveWorldIndex = requestDiveWorld();
+                        u.setWorldIndex(diveWorldIndex);
+                        obj.setWorldIndex(diveWorldIndex);
+                        obj.setPosition(new Vector2(480, 0));
                     } else if(obj.isDiving()){
+                        freeWorlds.push(obj.getWorldIndex());
                         obj.exitDive();
                         u.setWorldIndex(0);
                     }
@@ -142,13 +155,46 @@ public class GameService {
                 }
 
                 /*
-                 * OUTPUT MOVEMENT
+                 * General updates
                  */
 
-                if(obj.isDiving())
-                    moveDirY -= 1;
 
-                //Perform movement
+                // DIVING
+                if(obj.isDiving()) {
+                    moveDirY -= 1;
+                    double posY = obj.getPosition().getY();
+                    if(posY < 0){
+                        if(obj.isHoldingTreasure()){
+                            obj.setHasTreasure(true);
+                            freeWorlds.push(obj.getWorldIndex());
+                            obj.exitDive();
+                            u.setWorldIndex(0);
+                        }
+                        if(obj.getBreath() < obj.getMaxBreath() - 0.1){
+                            if(obj.getBreath() < 0) obj.setBreath(0);
+                            obj.setBreath(obj.getBreath() + deltaTime*0.5);
+                        } else{
+                            obj.setBreath(10);
+                        }
+                        if(posY < -20){
+                            moveDirY -= 1;
+                        }
+                    } else {
+                        obj.setBreath(obj.getBreath() - deltaTime*0.1);
+                    }
+
+                    if(obj.getBreath() <= 0){
+                        //TODO: KILL!!!!
+                        obj.setHoldingTreasure(false);
+                        freeWorlds.push(obj.getWorldIndex());
+                        obj.exitDive();
+                        u.setWorldIndex(0);
+                    }
+                }
+
+                /*
+                 * UPDATE MOVEMENT
+                 */
                 if(!obj.isInBoat()) {
                     obj.translate(moveDirX, 0);
                     obj.translate(0, -moveDirY);
@@ -185,9 +231,19 @@ public class GameService {
                 e.printStackTrace();
             }
 
+
+            last_time = time;
         }
     }
 
+
+    /**
+     * Gets all non-tile game objects within a given range and world
+     * @param gameObject The origin game object we are looking at
+     * @param range The range in distance units
+     * @param worldIndex The world index we are looking in
+     * @return All game objects within the range and world
+     */
     public List<GameObject> getGameObjectsInRange(GameObject gameObject, int range, int worldIndex){
         double rangeSquared = range*range;
         ArrayList<GameObject> foundObjects = new ArrayList<>();
@@ -227,7 +283,7 @@ public class GameService {
         removedUserQueue.add(sessionID);
     }
 
-    public void removeUser(String sessionID){
+    private void removeUser(String sessionID){
         User removedUser = users.remove(sessionID);
         userService.insertUser(removedUser);
         removeGameObject(removedUser.getPlayerObjectID());
@@ -250,6 +306,37 @@ public class GameService {
 
     public void addKeysToUser(String keys, String sessionID){
         users.get(sessionID).setKeyPresses(keys);
+    }
+
+    /**
+     * Generates a diving world at an unoccupied world-index and returns the world's index
+     */
+    private int requestDiveWorld(){
+        int worldIndex = freeWorlds.pop();
+        clearWorld(worldIndex);
+        worlds[worldIndex] = new World(this);
+        worlds[worldIndex].generateWorld("divingworld.txt", worldIndex);
+        GameObject treasure = addGameObject(new Treasure(this, worldIndex));
+        treasure.setPosition(new Vector2(840, 260));
+
+        return worldIndex;
+    }
+
+    /**
+     * Clears all gameObjects tied to a world index
+     * @param worldIndex the world index to be cleared
+     */
+    public void clearWorld(int worldIndex){
+        Stack<Long> objectsToRemove = new Stack<>();
+        gameObjects.values().forEach(gameObject -> {
+            if(gameObject.getWorldIndex() == worldIndex){
+                objectsToRemove.push(gameObject.getID());
+            }
+        });
+
+        while(!objectsToRemove.isEmpty()){
+            removeGameObject(objectsToRemove.pop());
+        }
     }
 
 

@@ -33,7 +33,7 @@ GameObject.prototype.render = function (ctx) {
 
     this.sprite.scaleY = this.scaleY;
 
-    if(this.isStatic) {
+    if(this.isStatic || entityManager.changedWorld) {
         this.x = this.targetX;
         this.y = this.targetY;
     } else{

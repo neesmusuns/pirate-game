@@ -41,7 +41,7 @@ public class GameObject {
     /**
      * A reference to the game service currently hosting the game object
      */
-    private GameService gameService;
+    protected GameService gameService;
 
     /**
      * A static game object will never move, and should be rendered statically

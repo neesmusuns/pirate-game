@@ -20,8 +20,9 @@ posShift : {x : 0, y : 0},
 _removedIDs : [],
 _playerID : 0,
 _playerPos : {x : 0, y : 0},
-_stats : {health : 3, drink: 3},
+_stats : {health : 3, drink: 3, breath : 10, hasTreasure : false},
 _background : null,
+changedWorld : true,
 
 // "PUBLIC" METHODS
 
@@ -68,7 +69,7 @@ render: function(ctx) {
         objectsSorted[i].render(ctx)
     }
 
-    renderUI(this._stats.health, this._stats.drink);
+    renderUI(this._stats.health, this._stats.drink, this._stats.breath, this._stats.hasTreasure);
 },
 
 updateGameState: function(response) {
@@ -84,6 +85,8 @@ updateGameState: function(response) {
     if(gameState.stats != null) {
         this._stats.health = gameState.stats.health;
         this._stats.drink = gameState.stats.drink;
+        this._stats.breath = gameState.stats.breath;
+        this._stats.hasTreasure = gameState.stats.hasTreasure;
     }
 
 
@@ -137,13 +140,23 @@ updateGameState: function(response) {
         this._background.targetY = -this.posShift.y;
     }
 
-    let xLerp = util.lerp(0,gameState.posShift.x - this.posShift.x, 0.03);
-    let yLerp = util.lerp(0,gameState.posShift.y - this.posShift.y, 0.03);
-    g_ctx.translate(xLerp, yLerp);
+    if(gameState.changedWorld != null){
+        this.changedWorld = gameState.changedWorld;
+    }
 
-    this.posShift.x += xLerp;
+    if(!this.changedWorld) {
+        let xLerp = util.lerp(0, gameState.posShift.x - this.posShift.x, 0.03);
+        let yLerp = util.lerp(0, gameState.posShift.y - this.posShift.y, 0.03);
+        g_ctx.translate(xLerp, yLerp);
 
-    this.posShift.y += yLerp;
+        this.posShift.x += xLerp;
+
+        this.posShift.y += yLerp;
+    } else{
+        g_ctx.translate(gameState.posShift.x - this.posShift.x, gameState.posShift.y - this.posShift.y);
+        this.posShift.x += gameState.posShift.x - this.posShift.x;
+        this.posShift.y += gameState.posShift.y - this.posShift.y;
+    }
 
 }
 

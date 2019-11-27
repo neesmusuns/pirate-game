@@ -127,6 +127,7 @@ public class GameController {
 
             currentState.getRemovedGameObjectIDs().forEach(removedGameObjectIDs::put);
 
+            boolean changedWorld = false;
             if(user.hasChangedWorld()) {
                 System.out.println("Switched world");
                 for(Tile[] tiles : currentState.getWorld(user.getPreviousWorldIndex()).getTiles()){
@@ -136,6 +137,7 @@ public class GameController {
                 }
                 World world = currentState.getWorld(user.getWorldIndex());
                 putWorld(gameObjectsArray, world);
+                changedWorld = true;
                 user.setHasChangedWorld(false);
             }
 
@@ -145,6 +147,7 @@ public class GameController {
             posShift.put("x", gameService.getUsers().get(sessionID).getDeltaMovement().getX());
             posShift.put("y", gameService.getUsers().get(sessionID).getDeltaMovement().getY());
 
+            gameState.put("changedWorld", changedWorld);
             gameState.put("playerID", gameService.getUsers().get(sessionID).getPlayerObjectID());
             gameState.put("stats", stats);
             gameState.put("tempRemovedGameObjectIDs", tempRemovedGameObjectIDs);
@@ -180,6 +183,8 @@ public class GameController {
 
         stats.put("health", player.getHealth());
         stats.put("drink", user.getDrinks());
+        stats.put("breath", player.getBreath());
+        stats.put("hasTreasure", player.hasTreasure());
 
         return stats;
     }
