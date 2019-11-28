@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class Pirate extends GameObject {
 
-    private double health = 2; // pirate's health
+    private double health = 3; // pirate's health
 
     private int drunkedness; // pirate's drunkedness level
 
-    private int drinks = 1;
+    private int drinks = 0;
 
     private int hat; // hat/parrot accessories
 
@@ -42,7 +42,7 @@ public class Pirate extends GameObject {
 
     private boolean hasMap;
 
-    TreasureMarker treasureMarker;
+    private TreasureMarker treasureMarker;
 
     private Vector2 overWorldPosition;
 
@@ -62,7 +62,6 @@ public class Pirate extends GameObject {
         super.Start();
         setHasCollider(true);
         addIgnoreLayer("land");
-        hasTreasure = true;
     }
 
     public void Update(){
@@ -139,10 +138,12 @@ public class Pirate extends GameObject {
         double angle = 0;
 
         if(hasMap) {
-            Vector2 dir = Vector2.Sub(treasureMarker.getPosition(), getPosition());
+            Vector2 a = new Vector2(treasureMarker.getPosition());
+            Vector2 b = new Vector2(getPosition());
 
+            angle = Math.atan2(a.getY() - b.getY(), a.getX() - b.getX()) + Math.PI/2;
 
-            return Math.toDegrees(Math.atan2(-dir.getY(),dir.getX()));
+            return angle;
         }
 
         return angle;

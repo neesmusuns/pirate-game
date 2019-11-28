@@ -1,4 +1,4 @@
-function renderUI(health, drink, breath, hasTreasure){
+function renderUI(health, drink, breath, hasTreasure, hasMap, markerRot){
     for(let i = 0; i < 3; i++){
         let heartSprite = i < Math.round(health) ? "healthfull" : "healthempty";
 
@@ -11,6 +11,29 @@ function renderUI(health, drink, breath, hasTreasure){
         });
 
         heart.render(ctx)
+    }
+
+    if(hasMap){
+        let mapIcon = new UIElement({
+            x : -entityManager.posShift.x + 40 + 30*4,
+            y : -entityManager.posShift.y + 40,
+            scaleX : 2,
+            scaleY : 2,
+            sprite : 'map'
+        });
+
+        mapIcon.render(ctx);
+
+        let marker = new UIElement({
+            x : -entityManager.posShift.x + 40 + 30*4,
+            y : -entityManager.posShift.y + 40,
+            scaleX : 2,
+            scaleY : 2,
+            rotation : markerRot,
+            sprite : 'marker'
+        });
+
+        marker.render(ctx);
     }
 
     for(let i = 0; i < 3; i++){

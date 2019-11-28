@@ -1,4 +1,4 @@
-Pirate rum,4,bottlefull
+Pirate "Juice",4,bottlefull
 Map,10,map
 Boat,40,boat0
 Parrot,16,parrot1

@@ -1,4 +1,4 @@
-package is.hi.hbv501.pirategame.pirategame.game;
+package is.hi.hbv501.pirategame.pirategame.game.statics;
 
 import java.util.HashMap;
 import java.util.Map;

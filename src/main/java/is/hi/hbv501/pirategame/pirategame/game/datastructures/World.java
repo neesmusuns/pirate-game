@@ -1,7 +1,6 @@
 package is.hi.hbv501.pirategame.pirategame.game.datastructures;
 
-import is.hi.hbv501.pirategame.pirategame.PirategameApplication;
-import is.hi.hbv501.pirategame.pirategame.game.ItemPrices;
+import is.hi.hbv501.pirategame.pirategame.game.statics.ItemPrices;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Shop;
 import is.hi.hbv501.pirategame.pirategame.game.objects.ShopItem;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class World {

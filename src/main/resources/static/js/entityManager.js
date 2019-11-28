@@ -20,7 +20,7 @@ posShift : {x : 0, y : 0},
 _removedIDs : [],
 _playerID : 0,
 _playerPos : {x : 0, y : 0},
-_stats : {health : 3, drink: 3, breath : 10, hasTreasure : false, money: 0},
+_stats : {health : 3, drink: 3, breath : 10, hasTreasure : false, money: 0, hasMap : false, markerRot : 0},
 _background : null,
 changedWorld : true,
 isInShop : false,
@@ -71,7 +71,8 @@ render: function(ctx) {
         objectsSorted[i].render(ctx)
     }
 
-    renderUI(this._stats.health, this._stats.drink, this._stats.breath, this._stats.hasTreasure);
+    renderUI(this._stats.health, this._stats.drink, this._stats.breath, this._stats.hasTreasure,
+            this._stats.hasMap, this._stats.markerRot);
 },
 
 updateGameState: function(response) {
@@ -102,6 +103,8 @@ updateGameState: function(response) {
         this._stats.breath = gameState.stats.breath;
         this._stats.hasTreasure = gameState.stats.hasTreasure;
         this._stats.money = gameState.stats.money;
+        this._stats.hasMap = gameState.stats.hasMap;
+        this._stats.markerRot = gameState.stats.markerRot;
     }
 
 

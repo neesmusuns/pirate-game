@@ -6,6 +6,7 @@ import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.Vector2;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.*;
+import is.hi.hbv501.pirategame.pirategame.game.statics.Wearables;
 import is.hi.hbv501.pirategame.pirategame.game.util.Input;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,6 +156,7 @@ public class GameService {
 
                 // DIVING
                 if(obj.isDiving()) {
+                    obj.setHasMap(false);
                     moveDirY -= 1;
                     double posY = obj.getPosition().getY();
                     if(posY < 0){
@@ -174,7 +176,7 @@ public class GameService {
                             moveDirY -= 1;
                         }
                     } else {
-                        obj.setBreath(obj.getBreath() - deltaTime*0.2);
+                        obj.setBreath(obj.getBreath() - deltaTime*0.25);
                     }
 
                     if(obj.getBreath() <= 0){
@@ -201,8 +203,6 @@ public class GameService {
                     obj.getBoat().translate(moveDirX, 0);
                     obj.moveRelativeToBoat();
                 }
-
-                System.out.println(obj.getTreasureMarkerRot());
 
                 //Check delta position since last iteration
                 u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));
@@ -254,6 +254,18 @@ public class GameService {
         }
 
         return foundObjects;
+    }
+
+    public void addClothing(Pirate p, String type){
+        String sprite = "";
+        if(type.equals("headwear"))
+            sprite = Wearables.getHeadwear(p.getHat());
+        if(type.equals("shirt"))
+            sprite = Wearables.getShirt(p.getShirt());
+        if(type.equals("pants"))
+            sprite = Wearables.getPants(p.getPants());
+
+        addGameObject(new Clothing(this, p, sprite));
     }
 
     public GameState getGameState() {

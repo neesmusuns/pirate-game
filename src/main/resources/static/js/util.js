@@ -15,6 +15,10 @@ square: function(x) {
     return x*x;
 },
 
+degToRad: function(degrees) {
+    return (Math.PI / 180)*degrees;
+},
+
 lerp: function (start, end, amt){
     return (1-amt)*start+amt*end
 },
@@ -48,7 +52,7 @@ getSprite: function(name){
             return g_sprites.black_shirt;
         case 'boat':
             return g_sprites.boat;
-        case 'parrot':
+        case 'parrot1':
             return g_sprites.parrot;
         case 'sword1':
             return g_sprites.sword1;

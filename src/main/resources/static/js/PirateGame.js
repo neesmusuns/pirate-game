@@ -112,6 +112,7 @@ function preloadDone() {
     g_sprites.bottleempty = new Sprite(g_images.bottleempty);
     g_sprites.bottlefull = new Sprite(g_images.bottlefull);
     g_sprites.marker = new Sprite(g_images.marker);
+    g_sprites.map = new Sprite(g_images.map);
 
     main.init();
 }

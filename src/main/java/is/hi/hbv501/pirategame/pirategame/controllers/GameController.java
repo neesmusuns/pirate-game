@@ -1,13 +1,13 @@
 package is.hi.hbv501.pirategame.pirategame.controllers;
 
 import is.hi.hbv501.pirategame.pirategame.game.GameObject;
-import is.hi.hbv501.pirategame.pirategame.game.ItemPrices;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.GameState;
 import is.hi.hbv501.pirategame.pirategame.game.datastructures.World;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Pirate;
 import is.hi.hbv501.pirategame.pirategame.game.objects.ShopItem;
 import is.hi.hbv501.pirategame.pirategame.game.objects.Tile;
 import is.hi.hbv501.pirategame.pirategame.game.objects.User;
+import is.hi.hbv501.pirategame.pirategame.game.statics.ItemPrices;
 import is.hi.hbv501.pirategame.pirategame.services.GameService;
 import is.hi.hbv501.pirategame.pirategame.services.UserService;
 import org.json.JSONArray;
@@ -57,13 +57,20 @@ public class GameController {
             gameService.requestRemoveUser(sessionID);
         }else if(isQuitting) {
             //Do nothing
-        } else if(isSelling){
+        }
+        /*
+         * SELLING
+         */
+        else if(isSelling){
             User user = gameService.getUsers().get(sessionID);
             Pirate p = ((Pirate) gameService.getGameObjects().get(user.getPlayerObjectID()));
             if(p.hasTreasure()){
                 user.setMoney(user.getMoney() + 20);
                 p.setHasTreasure(false);
             }
+        /*
+         * BUYING
+         */
         } else if(isBuying){
             String boughtItem = request.getParameter("Item");
             User user = gameService.getUsers().get(sessionID);
@@ -72,14 +79,16 @@ public class GameController {
             if(user.getMoney() >= ItemPrices.prices.get(boughtItem)){
                 user.setMoney(user.getMoney() - ItemPrices.prices.get(boughtItem));
             }
-            System.out.println("Attempted buying " + boughtItem);
+
             if(boughtItem.contains("boat")){
-                System.out.println("Successfully buying " + boughtItem);
                 gameService.addBoat();
             } else if(boughtItem.contains("map")){
                 gameService.generateTreasureMarker(user);
             } else if(boughtItem.contains("bottle")){
                 p.setDrinks(p.getDrinks() + 1);
+            } else if(boughtItem.contains("parrot")){
+                p.setHat(1);
+                gameService.addClothing(p, "headwear");
             }
         }
         /*
@@ -236,7 +245,7 @@ public class GameController {
         stats.put("hasTreasure", player.hasTreasure());
         stats.put("money", user.getMoney());
         stats.put("hasMap", player.hasMap());
-        stats.put("markerRotation", player.getTreasureMarkerRot());
+        stats.put("markerRot", player.getTreasureMarkerRot());
 
         return stats;
     }

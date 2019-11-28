@@ -32,7 +32,7 @@ UIElement.prototype.render = function (ctx) {
     this.sprite.scaleY = this.scaleY;
 
     this.sprite.drawCentredAt(
-	    ctx, this.x, this.y
+	    ctx, this.x, this.y, this.rotation
     );
 
     this.sprite.scaleX = origScaleX;
