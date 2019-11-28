@@ -176,7 +176,7 @@ public class GameService {
                             moveDirY -= 1;
                         }
                     } else {
-                        obj.setBreath(obj.getBreath() - deltaTime*0.25);
+                        obj.setBreath(obj.getBreath() - deltaTime*0.3);
                     }
 
                     if(obj.getBreath() <= 0){
@@ -283,10 +283,17 @@ public class GameService {
     private void addUser(String sessionID, User user) {
         GameObject go = addGameObject(new Pirate(this));
         go.setPosition(new Vector2(400,300)); //Center pirate on screen
+
+        if(user.getUsername().equals("irma")){
+            ((Pirate) go).setHat(2);
+            ((Pirate) go).setShirt(1);
+            addClothing(((Pirate) go), "headwear");
+            addClothing(((Pirate) go), "shirt");
+        }
         user.setPlayerObjectID(go.getID());
 
-        go.setPosition( new Vector2(1360, 1360));
-        user.setDeltaMovement(new Vector2(-(1360-400), -(1360-300)));
+        go.setPosition( new Vector2(32*40, 15*40));
+        user.setDeltaMovement(new Vector2(-(32*40-400), -(15*40-300)));
         users.put(sessionID, user);
     }
 
@@ -379,6 +386,6 @@ public class GameService {
 
     public void addBoat() {
         GameObject boat = addGameObject(new Boat(this));
-        boat.setPosition( new Vector2(1520, 1320));
+        boat.setPosition( new Vector2(-20+39*40, -20+15*40));
     }
 }

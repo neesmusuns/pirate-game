@@ -5,6 +5,8 @@ public class Wearables {
         switch(id){
             case 1:
                 return "parrot1";
+            case 2:
+                return "sword1";
             default:
                 return "bubble";
         }
