@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends Activity {
+public class GameActivity extends Activity {
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -28,7 +28,8 @@ public class FullscreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        gameLayout = findViewById(R.id.fullscreen_content);
+
+        gameLayout = findViewById(R.id.linear_layout);
         GameView gameView = new GameView(this);
         gameLayout.addView(gameView);
     }

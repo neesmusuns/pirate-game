@@ -1,6 +1,7 @@
 package com.example.pirategame;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,9 +16,12 @@ public class GameView extends SurfaceView {
     private GameLoopThread gameLoopThread;
     private Sprite sprite;
 
+    private EntityManager entityManager;
+
     public GameView(Context context) {
         super(context);
         gameView = this;
+        entityManager = new EntityManager(gameView);
         gameLoopThread = new GameLoopThread(gameView);
         holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
@@ -54,14 +58,12 @@ public class GameView extends SurfaceView {
                                        int width, int height) {
             }
         });
-
-        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.pirate0);
-        sprite = new Sprite(this, bmp);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
-        sprite.onDraw(canvas);
+        entityManager.update();
+        entityManager.render(canvas);
     }
 }
