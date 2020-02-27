@@ -3,26 +3,33 @@ package com.example.pirategame;
 import android.graphics.Canvas;
 import android.util.Pair;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EntityManager {
 
-    GameView gameView;
-    Canvas ctx;
-    ArrayList<GameObject> gameObjects = new ArrayList<>();
-    Pair<Double, Double> posShift;
+    private Map<Integer, GameObject> gameObjects = new LinkedHashMap<>();
+    private Map<Integer, GameObject> backgroundObjects = new LinkedHashMap<>();
+    private Pair<Float, Float> posShift = new Pair<>(0.0f, 0.0f);
     int[] removedIDs;
-    int playerID;
-    Pair<Double, Double> playerPos;
-    Stats stats;
-    GameObject background;
+    private int playerID;
+    private Pair<Float, Float> playerPos;
+    private Stats stats = new Stats();
+    private GameObject background;
     boolean changedWorld = true;
-    boolean isInShop;
-    boolean hasGeneratedShopUI;
+    private boolean isInShop;
+    private boolean hasGeneratedShopUI;
 
-    public EntityManager(GameView gameView){
-        this.gameView = gameView;
+    public boolean isLoggedIn;
+    private boolean gameObjectsMarkedDirty;
+
+    public EntityManager(){
         Start();
     }
 
@@ -30,28 +37,190 @@ public class EntityManager {
 
     }
 
-    public void update(){
-        if(background != null)
-            background.targetX += 2f;
+    public void updateGameState(JSONObject gameState, Canvas ctx) throws JSONException {
+        {
+            //TODO: Implement shop UI
+            if(gameState.has("shopItems")){
+                this.isInShop = true;
+                if(!this.hasGeneratedShopUI){
+                    //renderShopUI(gameState.shopItems);
+                    this.hasGeneratedShopUI = true;
+                }
+                //$("#money").html("GOLD: " + this._stats.money);
+            } else{
+                //if(this.hasGeneratedShopUI)
+                    //clearShopUI();
+            }
+
+
+
+            if(gameState.has("playerID")){
+                this.playerID = gameState.getInt("playerID");
+            }
+
+            if(gameState.has("stats")) {
+                JSONObject stats = (JSONObject) gameState.get("stats");
+                this.stats.setHealth(stats.getInt("health"));
+                this.stats.setDrink(stats.getInt("drink"));
+                this.stats.setBreath(stats.getInt("breath"));
+                this.stats.setHasTreasure(stats.getBoolean("hasTreasure"));
+                this.stats.setMoney(stats.getInt("money"));
+                this.stats.setHasMap(stats.getBoolean("hasMap"));
+                this.stats.setMarkerRot(stats.getDouble("health"));
+            }
+
+            JSONArray gameObjects = gameState.getJSONArray("gameObjects");
+
+            //Iterate through all received game objects
+            for(int i = 0; i < gameObjects.length(); i++){
+                JSONObject go = (JSONObject) gameObjects.get(i);
+                if(go.getInt("id") == this.playerID)
+                    this.playerPos= new Pair<>((float)go.getDouble("x"),
+                                               (float)go.getDouble("y"));
+
+                int foundID = go.getInt("id");
+                boolean hasFoundObject = false;
+
+                //Check if game object exists
+                if(this.gameObjects.containsKey(foundID) || this.backgroundObjects.containsKey(foundID)){
+                    hasFoundObject = true;
+                    GameObject obj = this.gameObjects.get(foundID);
+                    obj.targetX = (float) go.getDouble("x");
+                    obj.targetY = (float) go.getDouble("y");
+                    obj.scaleX = (float) go.getDouble("scaleX");
+                    obj.scaleY = (float) go.getDouble("scaleY");
+                    obj.zIndex = go.getInt("zIndex");
+                    obj.isRendered = go.getBoolean("isRendered");
+                    if (this.playerID == foundID)
+                        obj.tooltip = go.getString("tooltip");
+                }
+
+                //If no instance exists, create a new instance
+                if(!hasFoundObject) {
+                    GameObject obj = new GameObject(
+                            go.getInt("id"),
+                            (float) go.getDouble("x"),
+                            (float) go.getDouble("y"),
+                            (float) go.getDouble("scaleX"),
+                            (float) go.getDouble("scaleY"),
+                            go.getInt("zIndex"),
+                            go.getString("sprite"),
+                            "",
+                            go.getBoolean("isStatic"),
+                            go.getBoolean("isRendered"),
+                            this
+                    );
+                    if(obj.zIndex == 0) //If background object
+                        this.backgroundObjects.put(obj.id, obj);
+                    else
+                        this.gameObjects.put(obj.id, obj);
+                    gameObjectsMarkedDirty = true;
+                }
+
+            }
+
+            JSONArray tempRemovedGameObjects = gameState.getJSONArray("tempRemovedGameObjectIDs");
+            for(int i = 0; i < tempRemovedGameObjects.length(); i++) {
+                int ID = ((JSONObject) tempRemovedGameObjects.get(i)).getInt("id");
+                int index = 0;
+                for(int k = 0; k < this.gameObjects.size(); k++){
+                    if(this.gameObjects.get(k).id == ID) {
+                        index = k;
+                        break;
+                    }
+                }
+                this.gameObjects.remove(index);
+            }
+
+            JSONArray removedGameObjects = gameState.getJSONArray("removedGameObjectIDs");
+            for(int i = 0; i < removedGameObjects.length(); i++) {
+                int ID = (removedGameObjects.getInt(i));
+                int index = 0;
+                for(int k = 0; k < this.gameObjects.size(); k++){
+                    if(this.gameObjects.get(k).id == ID) {
+                        index = k;
+                        break;
+                    }
+                }
+                this.gameObjects.remove(index);
+
+            }
+
+            if(this.background != null) {
+                this.background.targetX = -this.posShift.first;
+                this.background.targetY = -this.posShift.second;
+            }
+
+            if(gameState.has("changedWorld")){
+                this.changedWorld = gameState.getBoolean("changedWorld");
+            }
+
+            JSONObject posShift = (JSONObject) gameState.get("posShift");
+
+            float x = (float) posShift.getDouble("x")*2;
+            float y = (float) posShift.getDouble("y")*2;
+            if(!this.changedWorld) {
+                float xLerp = Util.lerp(this.posShift.first, x, 0.03f);
+                float yLerp = Util.lerp(this.posShift.second, y, 0.03f);
+                ctx.translate(xLerp, yLerp);
+
+                this.posShift = new Pair<>(xLerp, yLerp);
+            } else{
+                ctx.translate((x),
+                              (y));
+
+                this.posShift = new Pair<>(x, y);
+            }
+        }
     }
 
-    public void render(Canvas ctx){
-        if(background != null){
-            background.render(ctx);
-        } else{
-            System.out.println("Added background");
-            background = new GameObject(-1, 0, 0,
-                                    2, 2, -1,
-                                    "background", "",
-                                    true, true,
-                                    gameView, this);
-        }
+    public void render(Canvas ctx, boolean isBackground, GameView gameView){
+        if(!isBackground) {
+            if (gameObjects.size() > 0) {
+                //Sort gameObjects via zIndex
+                if (gameObjectsMarkedDirty) {
+                    gameObjects = sortByValue(gameObjects);
+                    gameObjectsMarkedDirty = false;
+                }
 
-        if (gameObjects.size() > 0) {
-            //Sort gameObjects via zIndex
-            Collections.sort(gameObjects);
+                gameObjects.forEach((id, obj) -> {
+                    obj.render(ctx, gameView);
+                });
+            }
+        } else {
+            System.out.println("RENDERING BACKGROUND!");
+            ctx.translate(posShift.first, posShift.second);
 
-            gameObjects.forEach(obj -> obj.render(ctx));
+            if(background != null && !background.hasBeenRendered){
+                background.render(ctx, gameView);
+                background.hasBeenRendered = true;
+            } else{
+                background = new GameObject(-1, 0, 0,
+                        2, 2, -1,
+                        "background", "",
+                        true, true,
+                        this);
+            }
+
+            backgroundObjects.forEach((id, obj) -> {
+                //if (!obj.hasBeenRendered) {
+                    obj.render(ctx, gameView);
+                    obj.hasBeenRendered = true;
+                //s}
+            });
         }
     }
+
+    private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
 }

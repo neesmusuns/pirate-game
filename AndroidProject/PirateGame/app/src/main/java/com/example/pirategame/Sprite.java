@@ -13,7 +13,14 @@ public class Sprite {
         this.bmp=bmp;
     }
 
-    public void onDraw(Canvas canvas, float x, float y) {
-        canvas.drawBitmap(bmp, x, y, null);
+    void onDraw(Canvas canvas, float x, float y) {
+        canvas.save();
+        canvas.scale(this.scaleX, this.scaleY);
+        canvas.translate(x, y);
+        canvas.rotate(0);
+        int w = bmp.getWidth();
+        int h = bmp.getHeight();
+        canvas.drawBitmap(bmp, -w/2, -h/2, null);
+        canvas.restore();
     }
 }

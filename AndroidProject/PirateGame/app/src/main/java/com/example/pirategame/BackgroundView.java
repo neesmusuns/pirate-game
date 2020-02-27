@@ -2,9 +2,7 @@ package com.example.pirategame;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -15,36 +13,24 @@ import com.example.pirategame.persistentcookiejar.persistence.SharedPrefsCookieP
 import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
 
-public class GameView extends SurfaceView {
+public class BackgroundView extends GameView {
+
+
+    private SurfaceHolder holder;
     private GameView gameView;
     private GameLoopThread gameLoopThread;
 
     EntityManager entityManager;
 
-    boolean hasSentLogIn = false;
 
-    OkHttpClient client;
-
-
-    public GameView(Context context, EntityManager entityManager, boolean isBackground){
-        super(context);
-    }
-
-    public GameView(Context context, EntityManager entityManager) {
-        super(context);
+    public BackgroundView(Context context, EntityManager entityManager, boolean isBackground) {
+        super(context, entityManager, isBackground);
         gameView = this;
         gameView.setZOrderOnTop(true);
         this.entityManager = entityManager;
         gameLoopThread = new GameLoopThread(gameView);
 
-        CookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
-
-        client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .build();
-
-        SurfaceHolder holder = getHolder();
+        holder = getHolder();
 
         holder.setFormat(PixelFormat.TRANSPARENT);
 
@@ -86,15 +72,6 @@ public class GameView extends SurfaceView {
 
     @Override
     protected void onDraw(Canvas ctx) {
-        ctx.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        if(!hasSentLogIn) {
-            hasSentLogIn = true;
-            RequestSender.sendLogInRequest(entityManager, client, ctx);
-        }
-        if(entityManager.isLoggedIn) {
-            RequestSender.sendUpdateRequest(entityManager, client, ctx);
-        }
-
-        entityManager.render(ctx, false, this);
+        entityManager.render(ctx, true, this);
     }
 }

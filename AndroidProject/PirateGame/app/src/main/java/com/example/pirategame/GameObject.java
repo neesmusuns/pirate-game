@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class GameObject implements Comparable {
-    GameView gameView;
     EntityManager entityManager;
 
     int id  = 0;
@@ -15,6 +14,7 @@ public class GameObject implements Comparable {
     float x = 0;
     float y = 0;
     Sprite sprite;
+    private final String spriteString;
     float scaleX = 1;
     float scaleY = 1;
     int zIndex = 0;
@@ -22,10 +22,11 @@ public class GameObject implements Comparable {
 
     boolean isStatic = false;
     boolean isRendered = true;
+    public boolean hasBeenRendered;
 
     public GameObject(int id, float targetX, float targetY, float scaleX, float scaleY, int zIndex,
-                      String sprite, String tooltip, boolean isStatic, boolean isRendered,
-                      GameView gameView, EntityManager entityManager){
+                      String spriteString, String tooltip, boolean isStatic, boolean isRendered,
+                      EntityManager entityManager){
         this.id = id;
         this.targetX = targetX;
         this.targetY = targetY;
@@ -35,15 +36,16 @@ public class GameObject implements Comparable {
         this.tooltip = tooltip;
         this.isStatic = isStatic;
         this.isRendered = isRendered;
-        this.gameView = gameView;
         this.entityManager = entityManager;
-
-        //TODO: Decode sprite string into bitmap
-        Bitmap bmp = BitmapFactory.decodeResource(gameView.getResources(), R.drawable.pirate0);
-        this.sprite = new Sprite(bmp);
+        this.spriteString = spriteString;
     }
 
-    public void render(Canvas ctx){
+    public void render(Canvas ctx, GameView gameView){
+        if(this.sprite == null){
+            Bitmap bmp = BitmapFactory.decodeResource(gameView.getResources(),
+                                                      Util.StringToBitmap(spriteString));
+            this.sprite = new Sprite(bmp);
+        }
         float origScaleX = scaleX;
 
         this.sprite.scaleX = this.scaleX;

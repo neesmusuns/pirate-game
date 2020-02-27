@@ -292,7 +292,7 @@ public class GameService {
         }
         user.setPlayerObjectID(go.getID());
 
-        go.setPosition( new Vector2(32*40, 15*40));
+        go.setPosition( new     Vector2(32*40, 15*40));
         user.setDeltaMovement(new Vector2(-(32*40-400), -(15*40-300)));
         users.put(sessionID, user);
     }

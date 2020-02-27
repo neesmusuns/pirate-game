@@ -107,6 +107,7 @@ public class GameController {
             String username = request.getParameter("Username");
             String password = request.getParameter("Password");
 
+
             //If user exists in database
             if (userService.findUserByCredentials(username) != null) {
                 User user = userService.findUserByCredentials(username);
