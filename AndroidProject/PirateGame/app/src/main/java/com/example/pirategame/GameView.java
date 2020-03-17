@@ -7,6 +7,8 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.pirategame.persistentcookiejar.PersistentCookieJar;
 import com.example.pirategame.persistentcookiejar.cache.SetCookieCache;
@@ -32,6 +34,9 @@ public class GameView extends SurfaceView {
 
     public GameView(Context context, EntityManager entityManager) {
         super(context);
+        setFocusable(true);
+        InputMethodManager mgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
         gameView = this;
         gameView.setZOrderOnTop(true);
         this.entityManager = entityManager;
@@ -84,8 +89,7 @@ public class GameView extends SurfaceView {
         });
     }
 
-    @Override
-    protected void onDraw(Canvas ctx) {
+    void render(Canvas ctx) {
         ctx.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         if(!hasSentLogIn) {
             hasSentLogIn = true;

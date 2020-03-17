@@ -71,7 +71,7 @@ public class BackgroundView extends GameView {
     }
 
     @Override
-    protected void onDraw(Canvas ctx) {
+    protected void render(Canvas ctx) {
         entityManager.render(ctx, true, this);
     }
 }

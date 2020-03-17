@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -102,8 +103,46 @@ public class GameActivity extends Activity {
             }
             return false;
         });
+    }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_W:
+                Util.input[0] = true;
+                return true;
+            case KeyEvent.KEYCODE_S:
+                Util.input[1] = true;
+                return true;
+            case KeyEvent.KEYCODE_A:
+                Util.input[2] = true;
+                return true;
+            case KeyEvent.KEYCODE_D:
+                Util.input[3] = true;
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_W:
+                Util.input[0] = false;
+                return true;
+            case KeyEvent.KEYCODE_S:
+                Util.input[1] = false;
+                return true;
+            case KeyEvent.KEYCODE_A:
+                Util.input[2] = false;
+                return true;
+            case KeyEvent.KEYCODE_D:
+                Util.input[3] = false;
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
     }
 
     @Override

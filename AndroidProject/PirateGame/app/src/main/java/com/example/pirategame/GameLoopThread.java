@@ -41,7 +41,7 @@ public class GameLoopThread extends Thread {
                 }
 
                 synchronized (view.getHolder()) {
-                    view.onDraw(c);
+                    view.render(c);
                 }
 
             } catch (InterruptedException e) {

@@ -9,13 +9,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class EntityManager {
 
     private Map<Integer, GameObject> gameObjects = new LinkedHashMap<>();
     private Map<Integer, GameObject> backgroundObjects = new LinkedHashMap<>();
+
+    private Queue<Pair<Integer, GameObject>> backgroundObjectQueue = new LinkedList<>();
+
     private Pair<Float, Float> posShift = new Pair<>(0.0f, 0.0f);
     int[] removedIDs;
     private int playerID;
@@ -111,7 +116,7 @@ public class EntityManager {
                             this
                     );
                     if(obj.zIndex == 0) //If background object
-                        this.backgroundObjects.put(obj.id, obj);
+                        this.backgroundObjectQueue.add(new Pair<>(obj.id, obj));
                     else
                         this.gameObjects.put(obj.id, obj);
                     gameObjectsMarkedDirty = true;
@@ -188,7 +193,6 @@ public class EntityManager {
                 });
             }
         } else {
-            System.out.println("RENDERING BACKGROUND!");
             ctx.translate(posShift.first, posShift.second);
 
             if(background != null && !background.hasBeenRendered){
@@ -202,12 +206,19 @@ public class EntityManager {
                         this);
             }
 
+            while(!backgroundObjectQueue.isEmpty()){
+                Pair<Integer, GameObject> p = backgroundObjectQueue.peek();
+                backgroundObjects.put(p.first, p.second);
+                backgroundObjectQueue.remove();
+            }
+
             backgroundObjects.forEach((id, obj) -> {
                 //if (!obj.hasBeenRendered) {
                     obj.render(ctx, gameView);
                     obj.hasBeenRendered = true;
-                //s}
+                //}
             });
+
         }
     }
 

@@ -1,8 +1,14 @@
 package com.example.pirategame;
 
+import android.graphics.Bitmap;
+
+import java.util.HashMap;
+
 public class Util {
 
     public static boolean[] input = new boolean[4];
+
+    public static HashMap<String, Bitmap> bitmaps = new HashMap<>();
 
     public static String collectInput(){
 

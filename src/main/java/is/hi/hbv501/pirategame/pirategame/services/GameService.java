@@ -24,7 +24,7 @@ public class GameService {
     private Queue<Pair<String, User>> userQueue = new LinkedList<>();
     private Queue<String> removedUserQueue = new LinkedList<>();
     private Vector2 defaultScale = new Vector2(2, 2);
-    long last_time = System.nanoTime();
+    private long last_time = System.nanoTime();
 
     private GameState gameState;
 

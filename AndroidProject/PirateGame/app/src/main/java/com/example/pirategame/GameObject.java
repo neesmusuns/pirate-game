@@ -42,9 +42,15 @@ public class GameObject implements Comparable {
 
     public void render(Canvas ctx, GameView gameView){
         if(this.sprite == null){
-            Bitmap bmp = BitmapFactory.decodeResource(gameView.getResources(),
-                                                      Util.StringToBitmap(spriteString));
-            this.sprite = new Sprite(bmp);
+            if(Util.bitmaps.containsKey(spriteString))
+                this.sprite = new Sprite(Util.bitmaps.get(spriteString));
+            else{
+                Bitmap bmp = BitmapFactory.decodeResource(gameView.getResources(),
+                        Util.StringToBitmap(spriteString));
+                this.sprite = new Sprite(bmp);
+
+                Util.bitmaps.put(spriteString, bmp);
+            }
         }
         float origScaleX = scaleX;
 
