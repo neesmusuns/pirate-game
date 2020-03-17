@@ -48,7 +48,39 @@ public class Util {
                 return R.drawable.sea1;
             case "sea2":
                 return R.drawable.sea2;
-            case "beach1":
+            case "n_in":
+                return R.drawable.beach_n_in;
+            case "e_in":
+                return R.drawable.beach_e_in;
+            case "s_in":
+                return R.drawable.beach_s_in;
+            case "w_in":
+                return R.drawable.beach_w_in;
+            case "ne_in":
+                return R.drawable.beach_ne_in;
+            case "nw_in":
+                return R.drawable.beach_nw_in;
+            case "se_in":
+                return R.drawable.beach_se_in;
+            case "sw_in":
+                return R.drawable.beach_sw_in;
+            case "n_out":
+                return R.drawable.beach_n_out;
+            case "e_out":
+                return R.drawable.beach_e_out;
+            case "s_out":
+                return R.drawable.beach_s_out;
+            case "w_out":
+                return R.drawable.beach_w_out;
+            case "ne_out":
+                return R.drawable.beach_ne_out;
+            case "nw_out":
+                return R.drawable.beach_nw_out;
+            case "se_out":
+                return R.drawable.beach_se_out;
+            case "sw_out":
+                return R.drawable.beach_sw_out;
+            case "mid":
                 return R.drawable.beach1;
             case "black_shirt":
                 return  R.drawable.black_shirt;

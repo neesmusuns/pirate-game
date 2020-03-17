@@ -10,7 +10,7 @@ all the actions to the relevant scripts
 
 "use strict";
 
-/* jshint browser: true, devel: true, globalstarict: true */
+/* jshint browser: true, devel: true, globalstrict: true */
 
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
@@ -123,7 +123,7 @@ window.addEventListener('beforeunload', function(e) {
 
         $.ajax({
             type: "POST",
-            cache: false,   
+            cache: false,
             url: "",
             data: requestData, // parameters
             success:

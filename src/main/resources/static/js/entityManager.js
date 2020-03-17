@@ -168,6 +168,7 @@ updateGameState: function(response) {
         g_ctx.translate(xLerp, yLerp);
 
         this.posShift.x += xLerp;
+
         this.posShift.y += yLerp;
     } else{
         g_ctx.translate(gameState.posShift.x - this.posShift.x, gameState.posShift.y - this.posShift.y);

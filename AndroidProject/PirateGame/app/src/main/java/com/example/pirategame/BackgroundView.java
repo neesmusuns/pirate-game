@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.example.pirategame.persistentcookiejar.PersistentCookieJar;
 import com.example.pirategame.persistentcookiejar.cache.SetCookieCache;
@@ -27,6 +28,7 @@ public class BackgroundView extends GameView {
         super(context, entityManager, isBackground);
         gameView = this;
         gameView.setZOrderOnTop(true);
+        gameView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         this.entityManager = entityManager;
         gameLoopThread = new GameLoopThread(gameView);
 
