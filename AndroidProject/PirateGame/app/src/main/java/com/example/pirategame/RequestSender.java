@@ -17,7 +17,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RequestSender {
-    private static String url = "http://192.168.87.41:8081";
+    private static String url = "http://192.168.87.101:8081";
     private static RequestBody body;
     private static HashMap<String,String> postData;
 

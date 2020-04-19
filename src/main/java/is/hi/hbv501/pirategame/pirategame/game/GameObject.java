@@ -103,7 +103,7 @@ public class GameObject {
         return position;
     }
 
-    public boolean translate(int x, int y){
+    public boolean translate(double x, double y){
         Vector2 translation = new Vector2(x, y);
         if(hasCollider) {
             /*
@@ -163,6 +163,7 @@ public class GameObject {
             }
         }
 
+        isModified = true;
         this.position.add(translation);
         return true;
     }
@@ -266,6 +267,8 @@ public class GameObject {
             }
             if(isUnstuck) break;
         }
+
+        isModified = true;
     }
 
     private boolean stuckTranslate(int x, int y){
@@ -318,6 +321,7 @@ public class GameObject {
             }
         }
 
+        isModified = true;
         this.position.add(translation);
         return true;
     }

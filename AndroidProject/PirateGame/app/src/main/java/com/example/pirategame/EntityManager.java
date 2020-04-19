@@ -1,5 +1,7 @@
 package com.example.pirategame;
 
+import android.app.Activity;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Pair;
 
@@ -24,7 +26,7 @@ public class EntityManager {
     private Pair<Float, Float> posShift = new Pair<>(0.0f, 0.0f);
     int[] removedIDs;
     private int playerID;
-    private Pair<Float, Float> playerPos;
+    private Pair<Float, Float> playerPos = new Pair<>(0.0f, 0.0f);
     private Stats stats = new Stats();
     private GameObject background;
     boolean changedWorld = true;
@@ -38,8 +40,8 @@ public class EntityManager {
         Start();
     }
 
-    private void Start(){
 
+    private void Start(){
     }
 
     public void updateGameState(JSONObject gameState, Canvas ctx) throws JSONException {
@@ -90,6 +92,7 @@ public class EntityManager {
                 if(this.gameObjects.containsKey(foundID) || this.backgroundObjects.containsKey(foundID)){
                     hasFoundObject = true;
                     GameObject obj = this.gameObjects.get(foundID);
+                    if(obj == null) continue;
                     obj.targetX = (float) go.getDouble("x");
                     obj.targetY = (float) go.getDouble("y");
                     obj.scaleX = (float) go.getDouble("scaleX");
@@ -162,25 +165,39 @@ public class EntityManager {
 
             JSONObject posShift = (JSONObject) gameState.get("posShift");
 
-            float x = (float) posShift.getDouble("x")*2;
-            float y = (float) posShift.getDouble("y")*2;
+            float x = (float) posShift.getDouble("x");
+            float y = (float) posShift.getDouble("y");
             if(!this.changedWorld) {
-                float xLerp = Util.lerp(this.posShift.first, x, 0.03f);
-                float yLerp = Util.lerp(this.posShift.second, y, 0.03f);
-                ctx.translate(xLerp, yLerp);
+                float xLerp = Util.lerp(0, (x-800) - this.posShift.first, 0.03f);
+                float yLerp = Util.lerp(0, (y-300) - this.posShift.second, 0.03f);
 
-                this.posShift = new Pair<>(xLerp, yLerp);
+                //System.out.println("X: " + xLerp + "Y: " + yLerp);
+
+                this.posShift = new Pair<>(this.posShift.first + xLerp, this.posShift.second + yLerp);
             } else{
-                ctx.translate((x),
-                              (y));
+                float xLerp = Util.lerp(0, x - this.posShift.first, 0.03f);
+                float yLerp = Util.lerp(0, y - this.posShift.second, 0.03f);
 
-                this.posShift = new Pair<>(x, y);
+                this.posShift = new Pair<>(this.posShift.first + xLerp, this.posShift.second + yLerp);
             }
         }
     }
 
     public void render(Canvas ctx, boolean isBackground, GameView gameView){
         if(!isBackground) {
+            if(GameActivity.gButton == null){
+                GameActivity.gButton = new GButton(100, 100,
+                        BitmapFactory.decodeResource(gameView.getResources(),
+                                Util.StringToBitmap("map")));
+            }
+
+            GameActivity.gButton.setPosition(playerPos.first + 500, playerPos.second + 500);
+            GameActivity.gButton.x = playerPos.first + 500;
+            GameActivity.gButton.y = playerPos.second + 500;
+            GameActivity.gButton.draw(ctx);
+
+            ctx.translate(this.posShift.first, this.posShift.second);
+
             if (gameObjects.size() > 0) {
                 //Sort gameObjects via zIndex
                 if (gameObjectsMarkedDirty) {
@@ -208,8 +225,10 @@ public class EntityManager {
 
             while(!backgroundObjectQueue.isEmpty()){
                 Pair<Integer, GameObject> p = backgroundObjectQueue.peek();
-                backgroundObjects.put(p.first, p.second);
-                backgroundObjectQueue.remove();
+                if(p != null) {
+                    backgroundObjects.put(p.first, p.second);
+                    backgroundObjectQueue.remove();
+                }
             }
 
             backgroundObjects.forEach((id, obj) -> {
@@ -234,4 +253,7 @@ public class EntityManager {
         return result;
     }
 
+    public Pair<Float, Float> getPosShift() {
+        return posShift;
+    }
 }

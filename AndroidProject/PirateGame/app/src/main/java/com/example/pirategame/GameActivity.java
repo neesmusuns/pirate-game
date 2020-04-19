@@ -26,13 +26,14 @@ public class GameActivity extends Activity {
     private static final int UI_ANIMATION_DELAY = 300;
 
     private FrameLayout gameLayout;
+    private EntityManager entityManager;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-        EntityManager entityManager = new EntityManager();
+        entityManager = new EntityManager();
 
 
         gameLayout = findViewById(R.id.linear_layout);
@@ -105,44 +106,53 @@ public class GameActivity extends Activity {
         });
     }
 
+    public static GButton gButton;
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_W:
-                Util.input[0] = true;
-                return true;
-            case KeyEvent.KEYCODE_S:
-                Util.input[1] = true;
-                return true;
-            case KeyEvent.KEYCODE_A:
-                Util.input[2] = true;
-                return true;
-            case KeyEvent.KEYCODE_D:
-                Util.input[3] = true;
-                return true;
-            default:
-                return super.onKeyUp(keyCode, event);
+    public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getX() - entityManager.getPosShift().first;
+        float y = event.getY() - entityManager.getPosShift().second;
+
+        System.out.print("TOUCH: ");
+        System.out.println("(" + x + ", " + y + ")");
+
+        System.out.print("MAP: ");
+        System.out.println("(" + gButton.x + ", " + gButton.y + ")");
+        if(Math.abs(gButton.x - x) < 100 && Math.abs(gButton.y - y) < 100) {
+            System.out.println("Button pressed");
+            return true;
         }
+
+        return super.onTouchEvent(event);
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_W:
-                Util.input[0] = false;
-                return true;
-            case KeyEvent.KEYCODE_S:
-                Util.input[1] = false;
-                return true;
-            case KeyEvent.KEYCODE_A:
-                Util.input[2] = false;
-                return true;
-            case KeyEvent.KEYCODE_D:
-                Util.input[3] = false;
-                return true;
-            default:
-                return super.onKeyUp(keyCode, event);
+    public boolean dispatchKeyEvent(KeyEvent event){
+        int keyCode = event.getKeyCode();
+        if (event.getAction()==KeyEvent.ACTION_DOWN){
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_W:
+                    GameLoopThread.inputTimer[0] = System.currentTimeMillis();
+                    Util.input[0] = true;
+                    return true;
+                case KeyEvent.KEYCODE_S:
+                    GameLoopThread.inputTimer[1] = System.currentTimeMillis();
+                    Util.input[1] = true;
+                    return true;
+                case KeyEvent.KEYCODE_A:
+                    GameLoopThread.inputTimer[2] = System.currentTimeMillis();
+                    Util.input[2] = true;
+                    return true;
+                case KeyEvent.KEYCODE_D:
+                    GameLoopThread.inputTimer[3] = System.currentTimeMillis();
+                    Util.input[3] = true;
+                    return true;
+                default:
+                    return super.onKeyUp(keyCode, event);
+            }
         }
+
+        return true;
     }
 
     @Override

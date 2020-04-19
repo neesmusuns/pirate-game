@@ -1,6 +1,7 @@
 package com.example.pirategame;
 
 import android.annotation.SuppressLint;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 public class GameLoopThread extends Thread {
@@ -9,6 +10,8 @@ public class GameLoopThread extends Thread {
 
     private long previousTime;
     private int fps = 60;
+
+    public static double[] inputTimer = new double[4];
 
     public GameLoopThread(GameView view) {
         this.view = view;
@@ -42,6 +45,11 @@ public class GameLoopThread extends Thread {
 
                 synchronized (view.getHolder()) {
                     view.render(c);
+                }
+
+                for (int i = 0; i < 4; i++) {
+                    if(System.currentTimeMillis() - inputTimer[i] > 64)
+                        Util.input[i] = false;
                 }
 
             } catch (InterruptedException e) {

@@ -33,6 +33,14 @@ public class GameService {
 
     public void Initialize(){
         Start();
+        Crab crab = (Crab) addGameObject(new Crab(this));
+        crab.setPosition(new Vector2(30*40, 15*40));
+
+        crab = (Crab) addGameObject(new Crab(this));
+        crab.setPosition(new Vector2(26*40, 15*40));
+
+        crab = (Crab) addGameObject(new Crab(this));
+        crab.setPosition(new Vector2(30*40, 13*40));
         Update();
     }
 
@@ -46,6 +54,7 @@ public class GameService {
         }
 
         gameState = new GameState(worlds, gameObjects);
+
         System.out.println("Finished generating world");
     }
 
@@ -55,9 +64,8 @@ public class GameService {
             double deltaTime = ((time - last_time) / 1000000000d);
 
 
-            for (GameObject go : gameObjects.values()) {
+            for (GameObject go : gameObjects.values())
                 go.Update();
-            }
 
             users.values().forEach(u -> {
                 Pirate obj = (Pirate) gameObjects.get(u.getPlayerObjectID());
@@ -180,7 +188,6 @@ public class GameService {
                     }
 
                     if(obj.getBreath() <= 0){
-                        //TODO: KILL!!!!
                         obj.setHealth(obj.getHealth() - deltaTime*0.5);
                         if(obj.getHealth() <= 0) {
                             obj.setHoldingTreasure(false);
@@ -207,6 +214,7 @@ public class GameService {
                 //Check delta position since last iteration
                 u.setDeltaMovement(Vector2.Add(u.getDeltaMovement(), Vector2.Sub(prevPos, obj.getPosition())));
 
+                obj.setModified(true);
                 u.clearKeyPresses();
             });
 
@@ -220,7 +228,6 @@ public class GameService {
             while(!removedUserQueue.isEmpty()){
                 String sessionID = removedUserQueue.remove();
                 removeUser(sessionID);
-
             }
 
             //Iterate with a 16ms delay (60 FPS)
@@ -230,7 +237,7 @@ public class GameService {
                 e.printStackTrace();
             }
 
-
+            gameState.setGameObjects(gameObjects);
             last_time = time;
         }
     }
